@@ -1,19 +1,24 @@
-{% extends "base_bootstrap.html" %}
+{% extends "base_menu.html" %}
 
 {% block content %}
-    <h1>Pricer</h1>
-    <h2>Choose a category</h2>
+    <h1>Listings</h1>
 
 {% if category_list %}
     <ul>
         {% for category in category_list %}
             <li>{{ category.name }}</li>
             <ul>
-                {% for subcategory in subcategory_list %}
-                    {% if subcategory.category.id == category.id %}
-                    <li>{{ subcategory.name }}</li>
-                    {% endif %}
-                {% endfor %}
+                {% if subcategory_list %}
+                    <span class="active-menu-item">
+                    {% for subcategory in subcategory_list %}
+                        {% if subcategory.category.id == category.id %}
+                        <li>{{ subcategory.name }}</li>
+                        {% endif %}
+                    {% endfor %}
+                    </span>
+                {% else %}
+                    <span class="inactive-menu-item"></span>
+                {% endif %}
             </ul>
         {% endfor %}
     </ul>

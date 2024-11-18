@@ -11,7 +11,16 @@ class CategoryListView(ListView):
     template_name = "prcr/main_list.html"
 
     def get(self, request):
-        category_list = Category.objects.all() #.order_by('word')
-        subcategory_list = SubCategory.objects.all() #.order_by('word')
+        category_list = Category.objects.all() # .order_by('word')
+        subcategory_list = SubCategory.objects.all() # .order_by('word')
         context = {'category_list': category_list, 'subcategory_list': subcategory_list}
         return render(request, self.template_name, context)
+
+
+# class ProductListView(ListView):
+#     template_name = "prcr/produt_list.html"
+
+#     def get(self, request, pk):
+#         product_list = Product.objects.filter(sub_category.id = pk) # filter by subcategory id
+#         context = {'product_list': product_list}
+#         return render(request, self.template_name, context)
