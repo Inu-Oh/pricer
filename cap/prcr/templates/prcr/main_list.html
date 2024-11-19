@@ -1,27 +1,40 @@
 {% extends "base_menu.html" %}
 
-{% block content %}
-    <h1>Listings</h1>
+{% block page_header %}
+<div class="p-3 m-2 bg-light rounded-3" style="background-color: #e3e2fd !important;"   >
+    <div class="container-fluid py-1">
+        <h2 class="display-4 text-muted"> Product Listings </h2>
+        {% comment %} <p><a class="btn btn-md btn-outline-primary mt-1" href="#">
+            Add a new product to track &raquo;</a></p> {% endcomment %}
+    </div>
+</div>
+{% endblock page_header %}
 
+{% block content %}
 {% if category_list %}
-    <ul>
-        {% for category in category_list %}
+{% for category in category_list %}
+<div class="p-1 m-3 bg-light rounded-3" style="background-color: #e3f2ed !important;">
+    <div class="container-fluid">
+        <ul>
             <li>{{ category.name }}</li>
             <ul>
                 {% if subcategory_list %}
                     <span class="active-menu-item">
                     {% for subcategory in subcategory_list %}
                         {% if subcategory.category.id == category.id %}
-                        <li>{{ subcategory.name }}</li>
+                        <li><a href="{% url 'prcr:product_list' subcategory.id %}">
+                            {{ subcategory.name }}</a></li>
                         {% endif %}
                     {% endfor %}
                     </span>
                 {% else %}
                     <span class="inactive-menu-item"></span>
                 {% endif %}
-            </ul>
-        {% endfor %}
-    </ul>
+            </ul>            
+        </ul>
+    </div>
+</div>
+{% endfor %}
 {% else %}
     <p>There are no categories yet in Pricer</p>
 {% endif %}

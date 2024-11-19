@@ -67,9 +67,9 @@ class Product(models.Model):
         max_length=128,
         validators=[MinLengthValidator(2, "Product name must be longer than two letters.")]
     )
-    brand = models.ForeignKey(Brand, null=True, on_delete=models.SET_NULL,
+    brand = models.ForeignKey(Brand, null=True, on_delete=models.CASCADE,
         related_name="product_brand")
-    sub_category = models.ForeignKey(SubCategory, null=True, on_delete=models.SET_NULL,
+    sub_category = models.ForeignKey(SubCategory, null=True, on_delete=models.CASCADE,
         related_name="product_subcategory")
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL,
         related_name="product_owner")

@@ -1,18 +1,24 @@
 {% extends "base_menu.html" %}
 
 {% block page_header %}
-<div class="p-3 mb-4 bg-light border rounded-3">
+<div class="p-3 m-2 bg-light rounded-3" style="background-color: #e3e2fd !important;">
     <div class="container-fluid py-1">
         <h2 class="display-4 text-muted"> {{ subcategory.name }} </h2>
         <p><a class="btn btn-md btn-outline-primary mt-1" href="#">
-            Add a new produt &raquo;</a></p>
+            Add a new product to track &raquo;</a></p>
     </div>
-  </div>
+</div>
 {% endblock page_header %}
 
 {% block content %}
-
-
-
-
+{% for product in filtered_products %}
+<div class="p-1 m-3 bg-light rounded-3" style="background-color: #e3f2ed !important;">
+    <div class="container-fluid">
+        <p>{{ product.name }}
+        {% for brand in brands %}{% if brand.id == product.brand_id %}
+        <span class="small text-muted">({{ brand.name }})</span></p>
+        {% endif %}{% endfor %}
+    </div>
+</div>
+{% endfor %}
 {% endblock content %}

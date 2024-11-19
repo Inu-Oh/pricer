@@ -3,8 +3,8 @@
 {% load app_tags %} <!-- see home/templatetags/app_tags.py -->
 
 {% block navbar %}
-<nav class="navbar navbar-expand-sm navbar-light bg-light"
-    style="border-radius: 5px !important; background-color: #e3f2fd;">
+<nav class="p-2 m-2 navbar navbar-expand-sm navbar-light bg-light rounded-3"
+    style="background-color: #e3f2fd !important;">
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'prcr:main_list' %}">Pricer</a>
         <ul class="navbar-nav">
