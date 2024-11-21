@@ -13,7 +13,6 @@ class Category(models.Model):
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
 
-    # Viewable in main list view. Users can add new categories. Only admins can delete and edit.
     def __str__(self) -> str:
         return self.name
     
@@ -31,7 +30,6 @@ class SubCategory(models.Model):
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
 
-    # Viewable in main list view. Users can add subcategories. Only admins can delete and edit.
     def __str__(self) -> str:
         return self.name
     
@@ -54,7 +52,6 @@ class Brand(models.Model):
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
 
-    # Viewable in product view. Users can add brands. Only admins can delete and edit.
     def __str__(self) -> str:
         if self.company_name:
             return self.name + " (" + self.company_name + ")"
@@ -67,14 +64,20 @@ class Product(models.Model):
         max_length=128,
         validators=[MinLengthValidator(2, "Product name must be longer than two letters.")]
     )
-    brand = models.ForeignKey(Brand, null=True, on_delete=models.CASCADE,
+    brand = models.ForeignKey(Brand, null=True, on_delete=models.SET_NULL,
         related_name="product_brand")
-    sub_category = models.ForeignKey(SubCategory, null=True, on_delete=models.CASCADE,
+    sub_category = models.ForeignKey(SubCategory, null=True, on_delete=models.SET_NULL,
         related_name="product_subcategory")
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL,
         related_name="product_owner")
     # colors = array for colors or selection
     # features = description or array
+
+    # Picture upload
+    picture = models.BinaryField(null=True, blank=True, editable=True)
+    content_type = models.CharField(max_length=256, null=True, blank=True,
+                                    help_text='The MimeTypeof the file')
+
 
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)

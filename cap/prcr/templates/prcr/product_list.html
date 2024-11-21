@@ -4,7 +4,8 @@
 <div class="p-3 m-2 bg-light rounded-3" style="background-color: #e3e2fd !important;">
     <div class="container-fluid py-1">
         <h2 class="display-4 text-muted"> {{ subcategory.name }} </h2>
-        <p><a class="btn btn-md btn-outline-primary mt-1" href="#">
+        <p><a class="btn btn-md btn-outline-primary mt-1" 
+            href="{% url 'prcr:product_create' subcategory.id %}">
             Add a new product to track &raquo;</a></p>
     </div>
 </div>
@@ -13,12 +14,19 @@
 {% block content %}
 {% for product in filtered_products %}
 <div class="p-1 m-3 bg-light rounded-3" style="background-color: #e3f2ed !important;">
-    <div class="container-fluid">
+    <div class="container-fluid" style="height: 125px;">
         <p>{{ product.name }}
         {% for brand in brands %}{% if brand.id == product.brand_id %}
-        <span class="small text-muted">({{ brand.name }})</span></p>
+        <span class="small text-muted">({{ brand.name }})</span>
         {% endif %}{% endfor %}
+        </p>
+        {% if product.content_type %}
+        <img style="float:right; max-height: 77px;" src="{% url 'prcr:product_picture' product.id %}">
+        {% else %}
+        <a href="#">Add a picture</a>
+        {% endif %}
     </div>
 </div>
 {% endfor %}
+{% debug %}
 {% endblock content %}
