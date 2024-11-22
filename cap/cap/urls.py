@@ -9,6 +9,7 @@ urlpatterns = [
     path("", include('prcr.urls')),
     path("accounts/", include("django.contrib.auth.urls")),
     path("admin/", admin.site.urls),
+    re_path(r'^oauth/', include('social_django.urls', namespace='social')),
 ]
 
 # Serve the static HTML

@@ -5,7 +5,7 @@
     <div class="container-fluid py-1">
         <h2 class="display-4 text-muted"> {{ subcategory.name }} </h2>
         <p><a class="btn btn-md btn-outline-primary mt-1" 
-            href="{% url 'prcr:product_create' subcategory.id %}">
+            href="{% url 'prcr:product_create' %}">
             Add a new product to track &raquo;</a></p>
     </div>
 </div>
@@ -19,11 +19,17 @@
         {% for brand in brands %}{% if brand.id == product.brand_id %}
         <span class="small text-muted">({{ brand.name }})</span>
         {% endif %}{% endfor %}
-        </p>
+        </p>{% comment %}   Make updates only visible to owners {% endcomment %}
+        <p><a class="btn btn-md btn-outline-primary mt-1" 
+            href="{% url 'prcr:product_update' product.id %}">
+            Update &raquo;</a></p>
         {% if product.content_type %}
         <img style="float:right; max-height: 77px;" src="{% url 'prcr:product_picture' product.id %}">
         {% else %}
-        <a href="#">Add a picture</a>
+        <a href="#" style="float:right; max-height: 77px;"
+            class="btn btn-md btn-outline-primary mt-1" 
+            href="{% url 'prcr:product_update' product.id %}">
+            Add a picture</a> {% comment %}  make a form to only add a picture {% endcomment %}
         {% endif %}
     </div>
 </div>

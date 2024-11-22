@@ -1,5 +1,5 @@
 from prcr.models import Brand, Category, Price, Product, SubCategory
-from prcr.forms import ProductCreateForm
+from prcr.forms import CreateForm
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
@@ -44,15 +44,14 @@ class ProductDetailView(DetailView):
 
 class ProductCreateView(LoginRequiredMixin, View):
     template_name = "prcr/product_form.html"
-    success_url = reverse_lazy('prcr:product_list') # Change to product detail later
 
     def get(self, request, pk=None):
-        form = ProductCreateForm()
+        form = CreateForm()
         context = {'form': form}
         return render(request, self.template_name, context)
     
     def post(self, request, pk=None):
-        form = ProductCreateForm(request.POST, request.FILES or None)
+        form = CreateForm(request.POST, request.FILES or None)
 
         if not form.is_valid():
             context = {'form': form}
@@ -62,26 +61,33 @@ class ProductCreateView(LoginRequiredMixin, View):
         product = form.save(commit=False)
         product.owner = self.request.user
         product.save()
-        return redirect(self.success_url)
+        success_url = reverse_lazy('prcr:product_list', kwargs={'pk': product.sub_category.id})
+        
+        return redirect(success_url)
 
 
 class ProductUpdateView(LoginRequiredMixin, View):
     template_name = "prcr/product_form.html"
-    success_url = reverse_lazy('prcr:product_list') # Change to product detail later
 
     def get(self, request, pk=None):
         product = get_object_or_404(Product, id=pk, owner=self.request.user)
-        form = ProductCreateForm(instance=product)
+        form = CreateForm(instance=product)
         context = {'form': form}
         return render(request, self.template_name, context)
 
     def post(self, request, pk=None):
         product = get_object_or_404(Product, id=pk, owner=self.request.user)
-        form = ProductCreateForm(request.POST, request.FILES or None, instance=product)
+        form = CreateForm(request.POST, request.FILES or None, instance=product)
 
         if not form.is_valid():
             context = {'form': form}
             return render(request, self.template_name, context)
+        
+        product = form.save(commit=False)
+        product.save()
+        success_url = reverse_lazy('prcr:product_list', kwargs={'pk': product.sub_category.id})
+
+        return redirect(success_url)
 
 # No delete product form at least at this time
 

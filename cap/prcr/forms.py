@@ -4,7 +4,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from prcr.humanize import naturalsize
 
 
-class ProductCreateForm(forms.ModelForm):
+class CreateForm(forms.ModelForm):
     max_upload_limit = 2 * 1024 * 1024
     max_upload_limit_text = naturalsize(max_upload_limit)
 
@@ -29,7 +29,7 @@ class ProductCreateForm(forms.ModelForm):
             
     # Convert uploaded File object to a picture
     def save(self, commit=True):
-        instance = super(ProductCreateForm, self).save(commit=False)
+        instance = super(CreateForm, self).save(commit=False)
 
         # We only need to adjust picture if it is a freshly uploaded file
         f = instance.picture   # Make a copy

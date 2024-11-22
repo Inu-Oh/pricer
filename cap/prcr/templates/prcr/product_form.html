@@ -8,7 +8,7 @@
         {{ form.as_table }} {% comment %} {{ form|crispy }} {% endcomment %}
         <input type="submit" value="Submit">
         <input type="submit" value="Cancel"
-            onclick="window.location.href='{% url 'prcr:product_list' subcategory.id %}';return false;">
+            onclick="window.location.href='{% url 'prcr:main_list' %}';return false;">
     </form>
 </p>
 <!-- https://stackoverflow.com/questions/2472422/django-file-upload-size-limit -->
@@ -24,5 +24,6 @@ document.getElementById("upload_form").addEventListener("submit", function() {
     }
 });
 </script>
+{% debug %}
 {% endblock content %}
 
