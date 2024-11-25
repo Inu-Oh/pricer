@@ -3,7 +3,7 @@
 {% block page_header %}
 <div class="p-3 m-2 bg-light rounded-3" style="background-color: #e3e2fd !important;">
     <div class="container-fluid py-1">
-        <h2 class="display-4 text-muted"> {{ subcategory.name }} </h2>
+        <h2 class="display-4 text-muted"> {{ subcategory.subcategory }} </h2>
         <p><a class="btn btn-md btn-outline-primary mt-1" 
             href="{% url 'prcr:product_create' %}">
             Add a new product to track &raquo;</a></p>
@@ -14,10 +14,11 @@
 {% block content %}
 {% for product in filtered_products %}
 <div class="p-1 m-3 bg-light rounded-3" style="background-color: #e3f2ed !important;">
-    <div class="container-fluid" style="height: 125px;">
-        <p>{{ product.name }}
+    <div class="container-fluid d-flex justify-content-between align-items-center"
+        style="height: 125px;">
+        <p>{{ product.product }}
         {% for brand in brands %}{% if brand.id == product.brand_id %}
-        <span class="small text-muted">({{ brand.name }})</span>
+        <span class="small text-muted">({{ brand.brand }})</span>
         {% endif %}{% endfor %}
         </p>{% comment %}   Make updates only visible to owners {% endcomment %}
         <p><a class="btn btn-md btn-outline-primary mt-1" 

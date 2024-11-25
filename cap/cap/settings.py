@@ -39,10 +39,22 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    # my apps
+    # Extensions - installed with requirements.txt
+    'django_extensions',
+    'crispy_forms',
+    'crispy_bootstrap5',
+    'rest_framework',
+    'social_django',
+    'taggit',
+
+    # My apps
     "home.apps.HomeConfig",
     "prcr.apps.PrcrConfig",
 ]
+
+# Crispy form settings
+CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -126,3 +138,7 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Login and logout redirect setting
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'

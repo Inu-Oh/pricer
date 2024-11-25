@@ -6,7 +6,7 @@ from django.conf import settings
 # from taggit.managers import TaggableManageer # need to install and add to settings
 
 class Category(models.Model):
-    name = models.CharField(
+    category = models.CharField(
         max_length=50,
         validators=[MinLengthValidator(2, "Category name must be longer than two letters.")]
     )
@@ -14,14 +14,14 @@ class Category(models.Model):
     updated_at = models.DateField(auto_now=True)
 
     def __str__(self) -> str:
-        return self.name
+        return self.category
     
     class Meta:
         verbose_name_plural = "categories"
 
 
 class SubCategory(models.Model):
-    name = models.CharField(
+    subcategory = models.CharField(
         max_length=50,
         validators=[MinLengthValidator(2, "Sub-category name must be longer than two letters.")]
     )
@@ -31,7 +31,7 @@ class SubCategory(models.Model):
     updated_at = models.DateField(auto_now=True)
 
     def __str__(self) -> str:
-        return self.name
+        return self.subcategory
     
     class Meta:
         verbose_name = "subcategory"
@@ -39,11 +39,11 @@ class SubCategory(models.Model):
 
 
 class Brand(models.Model):
-    name = models.CharField(
+    brand = models.CharField(
         max_length=128,
         validators=[MinLengthValidator(2, "Brand name must be longer than two letters.")]
     )
-    company_name = models.CharField(
+    company = models.CharField(
         max_length=128
     )
     # add logo for upload
@@ -53,20 +53,20 @@ class Brand(models.Model):
     updated_at = models.DateField(auto_now=True)
 
     def __str__(self) -> str:
-        if self.company_name:
-            return self.name + " (" + self.company_name + ")"
+        if self.company:
+            return self.brand + " (" + self.company + ")"
         else:
-            return self.name
+            return self.brand
 
 
 class Product(models.Model):
-    name = models.CharField(
+    product = models.CharField(
         max_length=128,
         validators=[MinLengthValidator(2, "Product name must be longer than two letters.")]
     )
     brand = models.ForeignKey(Brand, null=True, on_delete=models.SET_NULL,
         related_name="product_brand")
-    sub_category = models.ForeignKey(SubCategory, null=True, on_delete=models.SET_NULL,
+    subcategory = models.ForeignKey(SubCategory, null=True, on_delete=models.SET_NULL,
         related_name="product_subcategory")
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL,
         related_name="product_owner")
@@ -76,20 +76,20 @@ class Product(models.Model):
     # Picture upload
     picture = models.BinaryField(null=True, blank=True, editable=True)
     content_type = models.CharField(max_length=256, null=True, blank=True,
-                                    help_text='The MimeTypeof the file')
+        help_text='The MimeTypeof the file')
 
 
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
 
     def __str__(self) -> str:
-        product_str = self.name 
-        if self.brand and self.sub_category:
-            product_str = product_str + " by " + self.brand.name + " (" + self.sub_category.category.name + ")"
+        product_str = self.product
+        if self.brand and self.subcategory:
+            product_str = product_str + " by " + self.brand.brand + " (" + self.subcategory.category.category + ")"
         elif self.brand: 
-            product_str = product_str + " by " + self.brand.name
-        elif self.sub_category:
-            product_str = product_str + " (" + self.sub_category.name + ", " + self.sub_category.category.name + ")"
+            product_str = product_str + " by " + self.brand.brand
+        elif self.subcategory:
+            product_str = product_str + " (" + self.subcategory.subcategory + ", " + self.subcategory.category.category + ")"
         return product_str
 
 

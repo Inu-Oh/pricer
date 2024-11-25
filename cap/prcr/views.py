@@ -1,5 +1,5 @@
-from prcr.models import Brand, Category, Price, Product, SubCategory
 from prcr.forms import CreateForm
+from prcr.models import Brand, Category, Price, Product, SubCategory
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
@@ -8,25 +8,42 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
 
 
 class CategoryListView(ListView):
     template_name = "prcr/main_list.html"
 
     def get(self, request):
-        category_list = Category.objects.all().order_by('name')
-        subcategory_list = SubCategory.objects.all().order_by('name')
-        context = {'category_list': category_list, 'subcategory_list': subcategory_list}
+        category_list = Category.objects.all().order_by('category')
+        subcategory_list = SubCategory.objects.all().order_by('subcategory')
+        product_count = Product.objects.count()
+        context = {
+            'category_list': category_list,
+            'subcategory_list': subcategory_list,
+            'product_count': product_count
+            }
         return render(request, self.template_name, context)
+
+
+class CategoryCreateView(LoginRequiredMixin, CreateView):
+    model = Category
+    fields = '__all__'
+    success_url = reverse_lazy('prcr:main_list')
+
+
+class SubcategoryCreateView(LoginRequiredMixin, CreateView):
+    model = SubCategory
+    fields = '__all__'
+    success_url = reverse_lazy('prcr:main_list')
 
 
 class ProductListView(ListView):
     template_name = "prcr/product_list.html"
 
     def get(self, request, pk):
-        product_list = Product.objects.all().order_by(Lower('name')).values()
-        filtered_products = product_list.filter(sub_category_id=pk)
+        product_list = Product.objects.all().order_by(Lower('product')).values()
+        filtered_products = product_list.filter(subcategory_id=pk)
         subcategory = SubCategory.objects.get(id=pk)
         brands = Brand.objects.all()
         context = {
@@ -47,21 +64,21 @@ class ProductCreateView(LoginRequiredMixin, View):
 
     def get(self, request, pk=None):
         form = CreateForm()
-        context = {'form': form}
-        return render(request, self.template_name, context)
-    
+        ctx = {'form': form}
+        return render(request, self.template_name, ctx)
+
     def post(self, request, pk=None):
         form = CreateForm(request.POST, request.FILES or None)
 
         if not form.is_valid():
-            context = {'form': form}
-            return render(request, self.template_name, context)
+            ctx = {'form': form}
+            return render(request, self.template_name, ctx)
         
         # Add owner to the model before saving
         product = form.save(commit=False)
         product.owner = self.request.user
         product.save()
-        success_url = reverse_lazy('prcr:product_list', kwargs={'pk': product.sub_category.id})
+        success_url = reverse_lazy('prcr:product_list', kwargs={'pk': product.subcategory.id})
         
         return redirect(success_url)
 
@@ -72,20 +89,20 @@ class ProductUpdateView(LoginRequiredMixin, View):
     def get(self, request, pk=None):
         product = get_object_or_404(Product, id=pk, owner=self.request.user)
         form = CreateForm(instance=product)
-        context = {'form': form}
-        return render(request, self.template_name, context)
+        ctx = {'form': form}
+        return render(request, self.template_name, ctx)
 
     def post(self, request, pk=None):
         product = get_object_or_404(Product, id=pk, owner=self.request.user)
         form = CreateForm(request.POST, request.FILES or None, instance=product)
 
         if not form.is_valid():
-            context = {'form': form}
-            return render(request, self.template_name, context)
+            ctx = {'form': form}
+            return render(request, self.template_name, ctx)
         
         product = form.save(commit=False)
         product.save()
-        success_url = reverse_lazy('prcr:product_list', kwargs={'pk': product.sub_category.id})
+        success_url = reverse_lazy('prcr:product_list', kwargs={'pk': product.subcategory.id})
 
         return redirect(success_url)
 

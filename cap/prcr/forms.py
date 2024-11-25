@@ -16,7 +16,7 @@ class CreateForm(forms.ModelForm):
 
     class Meta:
         model = Product
-        fields = ['name', 'brand', 'sub_category', 'picture']  # Picture is manual
+        fields = ['product', 'brand', 'subcategory', 'picture']  # Picture is manual
 
     # Validate the size of the picture
     def clean(self):
