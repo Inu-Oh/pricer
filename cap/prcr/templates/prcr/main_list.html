@@ -31,9 +31,10 @@
                 {% if subcategory_list %}
                 {% for subcategory in subcategory_list %}
                     {% if subcategory.category.id == category.id %}
-                    <li style="list-style-type: none;">
+                    <li style="list-style-type: none; width: 90%;">
                         <a href="{% url 'prcr:product_list' subcategory.id %}"
-                        class="btn btn-sm btn-outline-primary mb-1">
+                        style="width: 100%; text-align: left;"
+                        class="btn btn-sm btn-outline-dark mb-1">
                         {{ subcategory.subcategory }}</a>
                     </li>
                     {% endif %}

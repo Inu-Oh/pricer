@@ -16,24 +16,29 @@
 <div class="p-1 m-3 bg-light rounded-3" style="background-color: #e3f2ed !important;">
     <div class="container-fluid d-flex justify-content-between align-items-center"
         style="height: 125px;">
-        <p>{{ product.product }}
-        {% for brand in brands %}{% if brand.id == product.brand_id %}
-        <span class="small text-muted">({{ brand.brand }})</span>
-        {% endif %}{% endfor %}
-        </p>{% comment %}   Make updates only visible to owners {% endcomment %}
-        <p><a class="btn btn-md btn-outline-primary mt-1" 
-            href="{% url 'prcr:product_update' product.id %}">
-            Update &raquo;</a></p>
+        <div>
+            <p>{{ product.product }}
+            {% for brand in brands %}{% if brand.id == product.brand_id %}
+            <span class="small text-muted">({{ brand.brand }})</span>
+            {% endif %}{% endfor %}
+            </p>{% comment %} Make updates only visible to owners {% endcomment %}
+            <p><a class="btn btn-md btn-outline-primary mt-1" 
+                href="{% url 'prcr:product_update' product.id %}">
+                Update &raquo;</a></p>
+        </div>
         {% if product.content_type %}
-        <img style="float:right; max-height: 77px;" src="{% url 'prcr:product_picture' product.id %}">
+        <img style="float:right; max-height: 100px;" class="rounded-3 me-1" 
+            src="{% url 'prcr:product_picture' product.id %}">
         {% else %}
-        <a href="#" style="float:right; max-height: 77px;"
-            class="btn btn-md btn-outline-primary mt-1" 
-            href="{% url 'prcr:product_update' product.id %}">
-            Add a picture</a> {% comment %}  make a form to only add a picture {% endcomment %}
+        <div class="outline-secondary rounded-3 me-1" 
+            style="height: 100px; width: 100px; padding: 22px 15px; text-align: center; border: 1px dashed gray;">
+            <a class="text-muted link-underline-none" style="text-decoration: none;"
+                href="{% url 'prcr:product_update' product.id %}">
+                Add an image</a> {% comment %} make a form to only add a picture {% endcomment %}
+        </div>
         {% endif %}
+        
     </div>
 </div>
 {% endfor %}
-{% debug %}
 {% endblock content %}
