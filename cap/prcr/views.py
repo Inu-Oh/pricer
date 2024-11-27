@@ -1,5 +1,5 @@
 from prcr.forms import CreateForm
-from prcr.models import Brand, Category, Price, Product, SubCategory
+from prcr.models import Brand, Category, Feature, Price, Product, SubCategory
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
@@ -16,12 +16,16 @@ class CategoryListView(ListView):
 
     def get(self, request):
         category_list = Category.objects.all().order_by('category')
+        category_count = category_list.count()
         subcategory_list = SubCategory.objects.all().order_by('subcategory')
+        subcategory_count = subcategory_list.count()
         product_count = Product.objects.count()
         context = {
             'category_list': category_list,
             'subcategory_list': subcategory_list,
-            'product_count': product_count
+            'product_count': product_count,
+            'category_count': category_count,
+            'subcategory_count': subcategory_count
             }
         return render(request, self.template_name, context)
 
@@ -36,6 +40,23 @@ class SubcategoryCreateView(LoginRequiredMixin, CreateView):
     model = SubCategory
     fields = '__all__'
     success_url = reverse_lazy('prcr:main_list')
+
+
+class BrandListView(ListView):
+    template_name = "prcr/brand_list.html"
+
+    def get(self, request):
+        brand_list = Brand.objects.all().order_by('brand')
+        brand_count = brand_list.count()
+        product_list = Product.objects.all().order_by('product')
+        product_count = product_list.count()
+        context = {
+            'brand_list': brand_list,
+            'product_list': product_list,
+            'brand_count': brand_count,
+            'product_count': product_count
+            }
+        return render(request, self.template_name, context)
 
 
 class ProductListView(ListView):
@@ -58,6 +79,21 @@ class ProductDetailView(DetailView):
     model = Product
     template_name = "prcr/product_detail.html"
 
+    def get(self, request, pk=None):
+        feature_list = Feature.objects.filter(product_id=pk)
+        price_list = Price.objects.filter(product_id=pk)
+        for obj in price_list:
+            obj.natural_date_observed = naturalday(obj.date_observed)
+        product = Product.objects.get(id=pk)
+        # product.natural_updated = naturaltime(product.updated_at)
+
+        context = {
+            'product': product,
+            'feature_list': feature_list,
+            'price_list': price_list
+        }
+        return render(request, self.template_name, context)
+        
 
 class ProductCreateView(LoginRequiredMixin, View):
     template_name = "prcr/product_form.html"
@@ -107,8 +143,7 @@ class ProductUpdateView(LoginRequiredMixin, View):
         return redirect(success_url)
 
 # No delete product form at least at this time
-
-
+# Product picture upload support function
 def stream_file(request, pk):
     pic = get_object_or_404(Product, id=pk)
     response = HttpResponse()

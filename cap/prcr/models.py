@@ -48,7 +48,6 @@ class Brand(models.Model):
     )
     # add logo for upload
     # add trust rating
-    # add categories or subcategories one to many field
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
 
@@ -106,3 +105,14 @@ class Price(models.Model):
     def __str__(self) -> str:
         price_str = str(self.price) + " (on " + str(self.date_observed) + ")"
         return price_str
+
+
+class Feature(models.Model):
+    feature = models.CharField(max_length=128)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="feature_product")
+
+    created_at = models.DateField(auto_now_add=True)
+    updated_at = models.DateField(auto_now=True)
+
+    def __str__(self) -> str:
+        return self.feature

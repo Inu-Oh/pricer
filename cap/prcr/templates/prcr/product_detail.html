@@ -20,13 +20,13 @@
 <div id="overlay" class="overlay" style="text-align: center;"
    onclick="document.getElementById('overlay').style.display = 'none';" >
 <img style="width:90%;margin-top: 50px; border:3px solid black;" 
-    src="{% url 'prcr:prodcut_picture' product.id %}">
+    src="{% url 'prcr:product_picture' product.id %}">
 </div>
 {% endif %}
 <span style="float: right;">
-({{ product.updated_at|naturaltime }})
+({{ product.natural_updated }})
 {% if product.owner == user %}
-<a href="{% url 'prcr:product_update' pic.id %}"><i class="fa fa-pencil"></i></a>
+<a href="{% url 'prcr:product_update' product.id %}"><i class="fa fa-pencil"></i></a>
 {% endif %}
 </span>
 <h1>{{ product.name }}</h1>
@@ -35,12 +35,14 @@
     onclick="document.getElementById('overlay').style.display = 'block';">
 {% endif %}
 <p>
-{{ prodcut }}
+{{ product }}
 </p>
 <p>
 </p>
 <p>
-<a href="{% url 'prcr:product_list' %}">All products</a>
+<a href="{% url 'prcr:product_list' product.subcategory_id %}"
+    class="btn btn-sm btn-outline-muted mt-1 text-muted">
+    Back to {{product.subcategory}} </a>
 </p>
 {% endblock content %}
 

@@ -2,11 +2,11 @@
 
 {% block page_header %}
 <div class="p-3 m-2 bg-light rounded-3" style="background-color: #e3e2fd !important;">
-    <div class="container-fluid py-1">
-        <h2 class="display-4 text-muted"> {{ subcategory.subcategory }} </h2>
-        <p><a class="btn btn-md btn-outline-primary mt-1" 
+    <div class="container-fluid py-1 d-flex justify-content-between align-items-center">
+        <h2 class="display-5 text-muted"> {{ subcategory.subcategory }} </h2>
+        <p><a class="btn btn-md btn-outline-primary mt-3" 
             href="{% url 'prcr:product_create' %}">
-            Add a new product to track &raquo;</a></p>
+            Add a new product &raquo;</a></p>
     </div>
 </div>
 {% endblock page_header %}
@@ -16,16 +16,17 @@
 <div class="p-1 m-3 bg-light rounded-3" style="background-color: #e3f2ed !important;">
     <div class="container-fluid d-flex justify-content-between align-items-center"
         style="height: 125px;">
-        <div>
-            <p>{{ product.product }}
+        <div><a href="{% url 'prcr:product_detail' product.id %}" style="text-decoration: none"> 
+            <p class="text-dark">
+                {{ product.product }}
             {% for brand in brands %}{% if brand.id == product.brand_id %}
             <span class="small text-muted">({{ brand.brand }})</span>
             {% endif %}{% endfor %}
             </p>{% comment %} Make updates only visible to owners {% endcomment %}
-            <p><a class="btn btn-md btn-outline-primary mt-1" 
+            <p><a class="btn btn-sm btn-outline-muted mt-1 text-muted" 
                 href="{% url 'prcr:product_update' product.id %}">
                 Update &raquo;</a></p>
-        </div>
+        </a></div>
         {% if product.content_type %}
         <img style="float:right; max-height: 100px;" class="rounded-3 me-1" 
             src="{% url 'prcr:product_picture' product.id %}">
