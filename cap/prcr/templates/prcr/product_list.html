@@ -20,13 +20,13 @@
             <p class="text-dark">
                 {{ product.product }}
             {% for brand in brands %}{% if brand.id == product.brand_id %}
-            <span class="small text-muted">({{ brand.brand }})</span>
+            <span class="small text-muted">({{ brand.brand }})</span></a>
             {% endif %}{% endfor %}
             </p>{% comment %} Make updates only visible to owners {% endcomment %}
-            <p><a class="btn btn-sm btn-outline-muted mt-1 text-muted" 
+            <p><a class="btn btn-sm btn-outline-secondary mt-1 text-muted" 
                 href="{% url 'prcr:product_update' product.id %}">
                 Update &raquo;</a></p>
-        </a></div>
+        </div>
         {% if product.content_type %}
         <img style="float:right; max-height: 100px;" class="rounded-3 me-1" 
             src="{% url 'prcr:product_picture' product.id %}">

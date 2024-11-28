@@ -2,7 +2,7 @@ from prcr.forms import CreateForm
 from prcr.models import Brand, Category, Feature, Price, Product, SubCategory
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
+from django.contrib.humanize.templatetags.humanize import naturalday #, naturaltime
 from django.db.models.functions import Lower
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -85,7 +85,7 @@ class ProductDetailView(DetailView):
         for obj in price_list:
             obj.natural_date_observed = naturalday(obj.date_observed)
         product = Product.objects.get(id=pk)
-        # product.natural_updated = naturaltime(product.updated_at)
+        product.natural_updated = naturalday(product.updated_at)
 
         context = {
             'product': product,
