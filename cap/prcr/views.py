@@ -10,6 +10,8 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView
 
+from urllib.parse import urlparse
+
 
 class CategoryListView(ListView):
     template_name = "prcr/main_list.html"
@@ -84,13 +86,21 @@ class ProductDetailView(DetailView):
         price_list = Price.objects.filter(product_id=pk)
         for obj in price_list:
             obj.natural_date_observed = naturalday(obj.date_observed)
+        highest_price = price_list.latest('price')
+        high_price_dom = urlparse(highest_price.link).netloc
+        highest_price.domain = '.'.join(high_price_dom.split('.')[-2:])
+        lowest_price = price_list.earliest('price')
+        low_price_dom = urlparse(lowest_price.link).netloc
+        lowest_price.domain = '.'.join(low_price_dom.split('.')[-2:])
         product = Product.objects.get(id=pk)
         product.natural_updated = naturalday(product.updated_at)
 
         context = {
             'product': product,
             'feature_list': feature_list,
-            'price_list': price_list
+            'price_list': price_list,
+            'highest_price': highest_price,
+            'lowest_price': lowest_price
         }
         return render(request, self.template_name, context)
         
