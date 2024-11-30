@@ -13,6 +13,12 @@ urlpatterns = [
     # Brand list view
     path('brands', views.BrandListView.as_view(), name='brand_list'),
 
+    # Feature create view
+    path('new_feature/<int:pk>', views.FeatureCreateView.as_view(), name='feature_form'),
+
+    # Price create view
+    path('new_price/<int:pk>', views.PriceCreateView.as_view(), name='price_form'),
+
     # Product list view
     path('products/<int:pk>', views.ProductListView.as_view(), name='product_list'),
 

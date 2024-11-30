@@ -1,4 +1,4 @@
-from prcr.forms import CreateForm
+from prcr.forms import CreateForm, FeatureCreateForm, PriceCreateForm
 from prcr.models import Brand, Category, Feature, Price, Product, SubCategory
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -59,6 +59,57 @@ class BrandListView(ListView):
             'product_count': product_count
             }
         return render(request, self.template_name, context)
+
+
+class FeatureCreateView(LoginRequiredMixin, View):
+    template_name = 'prcr/feature_form.html'
+
+    def get(self, request, pk):
+        form = FeatureCreateForm()
+        prod = Product.objects.get(id=pk)
+        context = { 'form': form, 'product': prod }
+        return render(request, self.template_name, context)
+
+    def post(self, request, pk):
+        form = FeatureCreateForm(request.POST)
+        prod = Product.objects.get(id=pk)
+
+        if not form.is_valid():
+            context = { 'form': form, 'product': prod }
+            return render(request, self.template_name, context)
+
+        # Add product to the model before saving
+        price = form.save(commit=False)
+        price.product = prod
+        price.save()
+        success_url = reverse_lazy('prcr:product_detail', kwargs={'pk': prod.id})
+        return redirect(success_url)
+
+
+class PriceCreateView(LoginRequiredMixin, View):
+    template_name = 'prcr/price_form.html'
+
+    def get(self, request, pk):
+        form = PriceCreateForm()
+        prod = Product.objects.get(id=pk)
+        context = { 'form': form, 'product': prod }
+        return render(request, self.template_name, context)
+
+    def post(self, request, pk):
+        form = PriceCreateForm(request.POST)
+        prod = Product.objects.get(id=pk)
+
+        if not form.is_valid():
+            context = { 'form': form, 'product': prod }
+            return render(request, self.template_name, context)
+
+        # Add owner and product to the model before saving
+        price = form.save(commit=False)
+        price.owner = self.request.user
+        price.product = prod
+        price.save()
+        success_url = reverse_lazy('prcr:product_detail', kwargs={'pk': prod.id})
+        return redirect(success_url)
 
 
 class ProductListView(ListView):

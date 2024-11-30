@@ -1,0 +1,15 @@
+{% extends "base_menu.html" %}
+
+{% block content %}
+<p> 
+    {% load crispy_forms_tags %}
+    {{ product }}
+    <form action="" method="post" id="upload_form" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <input type="submit" value="Submit">
+        <input type="submit" value="Cancel"
+            onclick="window.location.href='{% url 'prcr:product_detail' product.id %}';return false;">
+    </form>
+</p>
+{% endblock content %}

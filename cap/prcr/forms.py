@@ -1,7 +1,19 @@
 from django import forms
-from prcr.models import Product
+from prcr.models import Feature, Product, Price
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from prcr.humanize import naturalsize
+
+
+class FeatureCreateForm(forms.ModelForm):
+    class Meta:
+        model = Feature
+        fields = ['feature']
+
+
+class PriceCreateForm(forms.ModelForm):
+    class Meta:
+        model = Price
+        fields = ['price', 'link']
 
 
 class CreateForm(forms.ModelForm):
