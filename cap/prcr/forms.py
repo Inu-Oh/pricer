@@ -1,5 +1,5 @@
 from django import forms
-from prcr.models import Feature, Product, Price
+from prcr.models import Feature, Product, Price, SubCategory
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from prcr.humanize import naturalsize
 
@@ -16,7 +16,13 @@ class PriceCreateForm(forms.ModelForm):
         fields = ['price', 'link']
 
 
-class CreateForm(forms.ModelForm):
+class SubcategoryCreateForm(forms.ModelForm):
+    class Meta:
+        model = SubCategory
+        fields = ['subcategory']
+
+
+class ProductCreateForm(forms.ModelForm):
     max_upload_limit = 2 * 1024 * 1024
     max_upload_limit_text = naturalsize(max_upload_limit)
 
@@ -41,7 +47,7 @@ class CreateForm(forms.ModelForm):
             
     # Convert uploaded File object to a picture
     def save(self, commit=True):
-        instance = super(CreateForm, self).save(commit=False)
+        instance = super(ProductCreateForm, self).save(commit=False)
 
         # We only need to adjust picture if it is a freshly uploaded file
         f = instance.picture   # Make a copy

@@ -12,9 +12,9 @@
             {{ brand_count }} brands<br><br><br>
             {{ product_count }} products</p>
         
-        <a class="btn btn-md btn-outline-primary" style="float:right" href="#">
-            {% comment %} href="{% url 'prcr:brand_create' %}"> {% endcomment %}
-            Add a brand<br>to Pricer &raquo;</a>
+        <a class="btn btn-md btn-outline-primary" style="float:right"
+            href="{% url 'prcr:brand_create' %}">
+            Add a brand<br> to pricer &raquo;</a>
     </div>
 </div>
 {% endblock page_header %}

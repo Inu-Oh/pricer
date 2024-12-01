@@ -11,12 +11,12 @@
         <ul class="navbar-nav container-fluid d-flex justify-content-around align-items-center">    
 {% comment %} {% if request.get_full_path == x %}class="active"{% endif %} {% endcomment %}
             <li>
-                <a class="nav-link" href="{{ x }}" role="button">
+                <a class="nav-link text-dark" href="{{ x }}" role="button">
                     Browse categories
                 </a>
             </li>
             <li>
-                <a class="nav-link" href="{% url 'prcr:brand_list' %}" role="button">
+                <a class="nav-link text-dark" href="{% url 'prcr:brand_list' %}" role="button">
                     Browse brands</a>
             </li>
         </ul>

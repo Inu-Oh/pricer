@@ -7,20 +7,23 @@ urlpatterns = [
     path('', views.CategoryListView.as_view(), name='main_list'),
 
     # Category and subcategory create views
-    path('category/create', views.CategoryCreateView.as_view(), name='category_create'),
-    path('subcategory/create', views.SubcategoryCreateView.as_view(), name='subcategory_create'),
+    path('new_category', views.CategoryCreateView.as_view(), name='category_create'),
+    path('category/<int:pk>/new_subcategory', views.SubcategoryCreateView.as_view(), name='subcategory_create'),
+
+    # Brand create view
+    path('new_brand', views.BrandCreateView.as_view(), name='brand_create'),
 
     # Brand list view
     path('brands', views.BrandListView.as_view(), name='brand_list'),
 
     # Feature create view
-    path('new_feature/<int:pk>', views.FeatureCreateView.as_view(), name='feature_form'),
+    path('product/<int:pk>/new_feature', views.FeatureCreateView.as_view(), name='feature_create'),
 
     # Price create view
-    path('new_price/<int:pk>', views.PriceCreateView.as_view(), name='price_form'),
+    path('product/<int:pk>/new_price', views.PriceCreateView.as_view(), name='price_create'),
 
     # Product list view
-    path('products/<int:pk>', views.ProductListView.as_view(), name='product_list'),
+    path('subcategory/<int:pk>/products', views.ProductListView.as_view(), name='product_list'),
 
     # Product detail, create and update views
     path('products/<int:pk>/detail', views.ProductDetailView.as_view(), name='product_detail'),

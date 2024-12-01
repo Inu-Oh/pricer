@@ -1,4 +1,4 @@
-from prcr.forms import CreateForm, FeatureCreateForm, PriceCreateForm
+from prcr.forms import FeatureCreateForm, PriceCreateForm, ProductCreateForm, SubcategoryCreateForm
 from prcr.models import Brand, Category, Feature, Price, Product, SubCategory
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -40,8 +40,29 @@ class CategoryCreateView(LoginRequiredMixin, CreateView):
 
 class SubcategoryCreateView(LoginRequiredMixin, CreateView):
     model = SubCategory
-    fields = '__all__'
-    success_url = reverse_lazy('prcr:main_list')
+    template_name = 'prcr/subcategory_form.html'
+    
+    def get(self, request, pk):
+        form = SubcategoryCreateForm()
+        category = Category.objects.get(id=pk)
+        context = {'form': form, 'category': category}
+        return render(request, self.template_name, context)
+    
+    def post(self, request, pk):
+        form = SubcategoryCreateForm(request.POST)
+        category = Category.objects.get(id=pk)
+        
+        if not form.is_valid():
+            context = {'form': form, 'category': category}
+            return render(request, self.template_name, context)
+        
+        # Add category to subcategory object before saving
+        subcategory = form.save(commit=False)
+        subcategory.category = category
+        subcategory.save()
+        new_subcategory_id = subcategory.id
+        success_url = reverse_lazy('prcr:product_list', kwargs={'pk': new_subcategory_id})
+        return redirect(success_url)
 
 
 class BrandListView(ListView):
@@ -59,6 +80,12 @@ class BrandListView(ListView):
             'product_count': product_count
             }
         return render(request, self.template_name, context)
+
+
+class BrandCreateView(LoginRequiredMixin, CreateView):
+    model = Brand
+    fields = '__all__'
+    success_url = reverse_lazy('prcr:brand_list')
 
 
 class FeatureCreateView(LoginRequiredMixin, View):
@@ -120,6 +147,7 @@ class ProductListView(ListView):
         filtered_products = product_list.filter(subcategory_id=pk)
         subcategory = SubCategory.objects.get(id=pk)
         brands = Brand.objects.all()
+        # to do: can alter brands to brand_list by filtering for brands related to product_list
         context = {
             'filtered_products': filtered_products,
             'subcategory': subcategory,
@@ -135,14 +163,18 @@ class ProductDetailView(DetailView):
     def get(self, request, pk=None):
         feature_list = Feature.objects.filter(product_id=pk)
         price_list = Price.objects.filter(product_id=pk)
-        for obj in price_list:
-            obj.natural_date_observed = naturalday(obj.date_observed)
-        highest_price = price_list.latest('price')
-        high_price_dom = urlparse(highest_price.link).netloc
-        highest_price.domain = '.'.join(high_price_dom.split('.')[-2:])
-        lowest_price = price_list.earliest('price')
-        low_price_dom = urlparse(lowest_price.link).netloc
-        lowest_price.domain = '.'.join(low_price_dom.split('.')[-2:])
+        if price_list:
+            for obj in price_list:
+                obj.natural_date_observed = naturalday(obj.date_observed)
+            highest_price = price_list.latest('price')
+            high_price_dom = urlparse(highest_price.link).netloc
+            highest_price.domain = '.'.join(high_price_dom.split('.')[-2:])
+            lowest_price = price_list.earliest('price')
+            low_price_dom = urlparse(lowest_price.link).netloc
+            lowest_price.domain = '.'.join(low_price_dom.split('.')[-2:])
+        else:
+            highest_price = ''
+            lowest_price = ''
         product = Product.objects.get(id=pk)
         product.natural_updated = naturalday(product.updated_at)
 
@@ -160,12 +192,12 @@ class ProductCreateView(LoginRequiredMixin, View):
     template_name = "prcr/product_form.html"
 
     def get(self, request, pk=None):
-        form = CreateForm()
+        form = ProductCreateForm()
         ctx = {'form': form}
         return render(request, self.template_name, ctx)
 
     def post(self, request, pk=None):
-        form = CreateForm(request.POST, request.FILES or None)
+        form = ProductCreateForm(request.POST, request.FILES or None)
 
         if not form.is_valid():
             ctx = {'form': form}
@@ -175,7 +207,7 @@ class ProductCreateView(LoginRequiredMixin, View):
         product = form.save(commit=False)
         product.owner = self.request.user
         product.save()
-        success_url = reverse_lazy('prcr:product_list', kwargs={'pk': product.subcategory.id})
+        success_url = reverse_lazy('prcr:product_detail', kwargs={'pk': product.id})
         
         return redirect(success_url)
 
@@ -185,13 +217,13 @@ class ProductUpdateView(LoginRequiredMixin, View):
 
     def get(self, request, pk=None):
         product = get_object_or_404(Product, id=pk, owner=self.request.user)
-        form = CreateForm(instance=product)
+        form = ProductCreateForm(instance=product)
         ctx = {'form': form}
         return render(request, self.template_name, ctx)
 
     def post(self, request, pk=None):
         product = get_object_or_404(Product, id=pk, owner=self.request.user)
-        form = CreateForm(request.POST, request.FILES or None, instance=product)
+        form = ProductCreateForm(request.POST, request.FILES or None, instance=product)
 
         if not form.is_valid():
             ctx = {'form': form}
@@ -199,7 +231,7 @@ class ProductUpdateView(LoginRequiredMixin, View):
         
         product = form.save(commit=False)
         product.save()
-        success_url = reverse_lazy('prcr:product_list', kwargs={'pk': product.subcategory.id})
+        success_url = reverse_lazy('prcr:product_detail', kwargs={'pk': product.id})
 
         return redirect(success_url)
 
