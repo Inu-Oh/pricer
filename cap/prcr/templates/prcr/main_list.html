@@ -20,37 +20,38 @@
 {% endblock page_header %}
 
 {% block content %}
-{% if category_list %}
-{% for category in category_list %}
 <div class="p-1 m-3 bg-light rounded-3" style="background-color: #e3f2ed !important;">
     <div class="container-fluid">
+        {% if category_list %}
+        {% for category in category_list %}
         <h4 class="p-3 m-2 bg-light rounded-3 text-muted d-flex justify-content-between align-items-center" 
         style="background-color: #e3e2fd !important;">
-            {{ category.category }}
-            <a href="{% url 'prcr:subcategory_create' category.id %}"
-                class="btn btn-sm btn-outline-secondary">
-                Add a subcategory to {{ category.category }} &raquo;</a>
-            </h4>
-            <ul>
-                {% if subcategory_list %}
-                {% for subcategory in subcategory_list %}
-                    {% if subcategory.category.id == category.id %}
-                    <li style="list-style-type: none; width: 90%;">
-                        <a href="{% url 'prcr:product_list' subcategory.id %}"
-                        style="width: 100%; text-align: left;"
-                        class="btn btn-sm btn-outline-dark mb-1">
-                        {{ subcategory.subcategory }}</a>
-                    </li>
-                    {% endif %}
+        {{ category.category }}
+        <a href="{% url 'prcr:subcategory_create' category.id %}"
+            class="btn btn-sm btn-outline-secondary">
+            Add a subcategory to {{ category.category }} &raquo;</a>
+        </h4>
+        <ul>
+            {% if subcategory_list %}
+            {% for subcategory in subcategory_list %}
+                {% if subcategory.category.id == category.id %}
+                <li style="list-style-type: none; width: 90%;">
+                    <a href="{% url 'prcr:product_list' subcategory.id %}"
+                    style="width: 100%; text-align: left;"
+                    class="btn btn-sm btn-outline-dark mb-1">
+                    {{ subcategory.subcategory }}</a>
+                </li>
+                {% else %}
+                <p class="p-3 m-2 text-danger">There are no subcategories yet in Pricer. Add one to start tracking products.</p>
+                {% endif %}
                 {% endfor %}
                 {% endif %}
             </ul>            
         </ul>
+        {% endfor %}
+        {% else %}
+            <p class="p-3 m-2 text-danger">There are no categories yet in Pricer. Add one to start tracking products.</p>
+        {% endif %}
     </div>
 </div>
-{% endfor %}
-{% else %}
-    <p>There are no categories yet in Pricer</p>
-{% endif %}
-
 {% endblock content %}

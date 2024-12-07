@@ -20,37 +20,38 @@
 {% endblock page_header %}
 
 {% block content %}
-{% if brand_list %}
-{% for brand in brand_list %}
 <div class="p-1 m-3 bg-light rounded-3" style="background-color: #e3f2ed !important;">
     <div class="container-fluid">
+        {% if brand_list %}
+        {% for brand in brand_list %}
         <h4 class="p-3 m-2 bg-light rounded-3 text-muted d-flex justify-content-between align-items-center" 
         style="background-color: #e3e2fd !important;">
-            {{ brand.brand }}
-            <a href="{% url 'prcr:product_create' %}"
-                class="btn btn-sm btn-outline-secondary">
-                Add a product to {{ brand.brand }} &raquo;</a>
-            </h4>
-            <ul>
-                {% if product_list %}
-                {% for product in product_list %}
-                    {% if product.brand.id == brand.id %}
-                    <li style="list-style-type: none; width: 90%;">
-                        <a href="{% url 'prcr:product_detail' product.id %}"
-                        style="width: 100%; text-align: left;"
-                        class="btn btn-sm btn-outline-dark mb-1">
-                        {{ product.product }}
-                        </a>
-                    </li>
-                    {% endif %}
-                {% endfor %}
-                {% endif %}
-            </ul>            
+        {{ brand.brand }}
+        <a href="{% url 'prcr:product_create' %}"
+            class="btn btn-sm btn-outline-secondary">
+            Add a product to {{ brand.brand }} &raquo;</a>
+        </h4>
+        <ul>
+            {% if product_list %}
+            {% for product in product_list %}
+            {% if product.brand.id == brand.id %}
+            <li style="list-style-type: none; width: 90%;">
+                <a href="{% url 'prcr:product_detail' product.id %}"
+                style="width: 100%; text-align: left;"
+                class="btn btn-sm btn-outline-dark mb-1">
+                {{ product.product }}
+                </a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            {% else %}
+            <p class="p-3 m-2 text-danger">There are no products for this brand.</p>
+            {% endif %}        
         </ul>
+        {% endfor %}
+        {% else %}
+            <p class="p-3 m-2 text-danger">There are no brands yet in Pricer. Add one to start browsing by brand.</p>
+        {% endif %}
     </div>
 </div>
-{% endfor %}
-{% else %}
-    <p>There are no brands yet in Pricer</p>
-{% endif %}
 {% endblock content %}
