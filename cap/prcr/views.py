@@ -147,11 +147,13 @@ class ProductListView(ListView):
         filtered_products = product_list.filter(subcategory_id=pk)
         subcategory = SubCategory.objects.get(id=pk)
         brands = Brand.objects.all()
+        feature_list = Feature.objects.all()
         # to do: can alter brands to brand_list by filtering for brands related to product_list
         context = {
             'filtered_products': filtered_products,
             'subcategory': subcategory,
             'brands': brands,
+            'feature_list': feature_list,
             }
         return render(request, self.template_name, context)
 

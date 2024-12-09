@@ -13,19 +13,22 @@
 
 {% block content %}
 {% for product in filtered_products %}
-<div class="p-1 m-3 bg-light rounded-3" style="background-color: #e3f2ed !important;">
-    <div class="container-fluid d-flex justify-content-between align-items-center"
-        style="height: 125px;">
-        <div><a href="{% url 'prcr:product_detail' product.id %}" style="text-decoration: none"> 
-            <p class="text-dark">
+<div class="p-2 pt-3 m-3 bg-light rounded-3" style="background-color: #e3f2ed !important;">
+    <div class="container-fluid d-flex justify-content-between" style="min-height: 111px;">
+        <div><p class="text-dark">
+            <a href="{% url 'prcr:product_detail' product.id %}" style="text-decoration: none"> 
                 {{ product.product }}
-            {% for brand in brands %}{% if brand.id == product.brand_id %}
-            <span class="small text-muted">({{ brand.brand }})</span></a>
-            {% endif %}{% endfor %}
-            </p>{% comment %} Make updates only visible to owners {% endcomment %}
+                {% for brand in brands %}{% if brand.id == product.brand_id %}
+                <span class="small text-muted">({{ brand.brand }})</span></a></p>
+                {% endif %}{% endfor %}
+            <p class="small text-dark">
+            {% if feature_list %}{% for feature in feature_list %}{% if feature.product_id == product.id %}
+            {{ feature }} &raquo; {% endif %}{% endfor %}{% endif %}
+            {% if product.owner_id == user.id %}
             <p><a class="btn btn-sm btn-outline-secondary mt-1 text-muted" 
                 href="{% url 'prcr:product_update' product.id %}">
-                Update &raquo;</a></p>
+                Edit this product &raquo;</a></p>
+            {% endif %}
         </div>
         {% if product.content_type %}
         <img style="float:right; max-height: 100px;" class="rounded-3 me-1" 
@@ -33,13 +36,19 @@
         {% else %}
         <div class="outline-secondary rounded-3 me-1" 
             style="height: 100px; width: 100px; padding: 22px 15px; text-align: center; border: 1px dashed gray;">
-            <a class="text-muted link-underline-none" style="text-decoration: none;"
+            <a class="text-muted" style="text-decoration: none;"
                 href="{% url 'prcr:product_update' product.id %}">
                 Add an image</a> {% comment %} make a form to only add a picture {% endcomment %}
         </div>
         {% endif %}
-        
+    </div>
+</div>
+{% empty %}
+<div class="p-3 m-3 bg-light rounded-3" style="background-color: #e3f2ed !important;">
+    <div class="text-danger" style="height: 125px;">
+        <p>There are no products yet in this subcategory.</p>
     </div>
 </div>
 {% endfor %}
+
 {% endblock content %}

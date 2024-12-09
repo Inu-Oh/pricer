@@ -44,7 +44,7 @@
         <div class="col-7 mt-3">
             <h5>Product features</h5><p class="fs-6 text-dark">
                 {% if feature_list %}{% for feature in feature_list %}{{ feature }} &raquo; 
-                {% endfor %}{% else %}No features recorded for the product.{% endif %}</p>
+                {% endfor %}{% else %}The feature list is empty{% endif %}</p>
             {% comment %} Fix the next link after creating feature form {% endcomment %}
             <a href="{% url 'prcr:feature_create' product.id %}"
                 class="btn btn-sm btn-outline-secondary text-start mb-3">
@@ -65,7 +65,7 @@
             {% comment %} Fix the next link after creating price form {% endcomment %}
             <a href="{% url 'prcr:price_create' product.id %}"
                 class="btn btn-sm btn-outline-secondary text-start mb-3">
-                Add a price link &raquo;</a>
+                Did you see an offer online? Add a price link &raquo;</a>
         </div>
         <div class="col-5">
             {% if product.content_type %}
