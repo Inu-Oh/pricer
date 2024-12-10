@@ -1,16 +1,27 @@
 {% extends "base_menu.html" %}
 
+{% block page_header %}
+<div class="p-3 m-2 bg-light rounded-3" style="background-color: #e3e2fd !important;">
+    <div class="container-fluid py-1">
+        <h2 class="display-5 text-secondary">Add new product</h2>
+    </div>
+</div>
+{% endblock page_header %}
+
+
 {% block content %}
-<p> 
-    {% load crispy_forms_tags %}
-    <form action="" method="post" id="upload_form" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <input type="submit" value="Submit">
-        <input type="submit" value="Cancel"
-            onclick="window.location.href='{% url 'prcr:main_list' %}';return false;">
-    </form>
-</p>
+<div class="p-1 m-3 bg-light rounded-3" style="background-color: #e3f2ed !important;">
+    <div class="container-fluid p-3">
+        {% load crispy_forms_tags %}
+        <form action="" method="post" id="upload_form" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" value="Submit" class="btn btn-lg btn-outline-success me-3">
+            <input type="submit" value="Cancel" class="btn btn-lg btn-outline-danger"
+                onclick="window.location.href='{% url 'prcr:main_list'%}';return false;">
+        </form>
+    </div>
+</div>
 <!-- https://stackoverflow.com/questions/2472422/django-file-upload-size-limit -->
 <script>
 document.getElementById("upload_form").addEventListener("submit", function() {

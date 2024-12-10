@@ -8,7 +8,8 @@ from django.conf import settings
 class Category(models.Model):
     category = models.CharField(
         max_length=50,
-        validators=[MinLengthValidator(2, "Category name must be longer than two letters.")]
+        validators=[MinLengthValidator(2, "Category name must be longer than two letters.")],
+        unique=True,
     )
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
@@ -23,7 +24,8 @@ class Category(models.Model):
 class SubCategory(models.Model):
     subcategory = models.CharField(
         max_length=50,
-        validators=[MinLengthValidator(2, "Sub-category name must be longer than two letters.")]
+        validators=[MinLengthValidator(2, "Sub-category name must be longer than two letters.")],
+        unique=True,
     )
     category = models.ForeignKey(Category, on_delete=models.CASCADE,
         related_name="subcategory_category")
@@ -41,11 +43,15 @@ class SubCategory(models.Model):
 class Brand(models.Model):
     brand = models.CharField(
         max_length=128,
-        validators=[MinLengthValidator(2, "Brand name must be longer than two letters.")]
+        validators=[MinLengthValidator(2, "Brand name must be longer than two letters.")],
+        unique=True,
     )
     company = models.CharField(
-        max_length=128
+        max_length=128,
+        validators=[MinLengthValidator(2, "Brand name must be longer than two letters.")]
     )
+    class Meta:
+        unique_together = ['brand', 'company']
     # add logo for upload
     # add trust rating
     created_at = models.DateField(auto_now_add=True)
@@ -61,7 +67,8 @@ class Brand(models.Model):
 class Product(models.Model):
     product = models.CharField(
         max_length=128,
-        validators=[MinLengthValidator(2, "Product name must be longer than two letters.")]
+        validators=[MinLengthValidator(2, "Product name must be longer than two letters.")],
+        unique=True,
     )
     brand = models.ForeignKey(Brand, null=True, on_delete=models.SET_NULL,
         related_name="product_brand")
@@ -110,6 +117,8 @@ class Price(models.Model):
 class Feature(models.Model):
     feature = models.CharField(max_length=128)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="feature_product")
+    class Meta:
+        unique_together = ['feature', 'product']
 
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
