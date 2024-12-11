@@ -61,6 +61,13 @@ class ProductCreateForm(forms.ModelForm):
 
         return instance
 
+
+class ProductAddImageForm(ProductCreateForm):
+    class Meta:
+        model = Product
+        fields = ['picture']
+
+
 # Source: https://www.dj4e.com/lessons/dj4e_ads1b
 # https://docs.djangoproject.com/en/4.2/topics/http/file-uploads/
 # https://stackoverflow.com/questions/2472422/django-file-upload-size-limit

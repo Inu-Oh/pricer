@@ -31,13 +31,13 @@
             {% endif %}
         </div>
         {% if product.content_type %}
-        <img style="float:right; max-height: 100px;" class="rounded-3 me-1" 
+        <img style="float:right; height: 100px;" class="rounded-3 me-1" 
             src="{% url 'prcr:product_picture' product.id %}">
         {% else %}
         <div class="outline-secondary rounded-3 me-1" 
             style="height: 100px; width: 100px; padding: 22px 15px; text-align: center; border: 1px dashed gray;">
             <a class="text-muted" style="text-decoration: none;"
-                href="{% url 'prcr:product_update' product.id %}">
+                href="{% url 'prcr:product_add_image' product.id %}">
                 Add an image</a> {% comment %} make a form to only add a picture {% endcomment %}
         </div>
         {% endif %}

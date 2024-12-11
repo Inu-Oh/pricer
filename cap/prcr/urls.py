@@ -29,6 +29,7 @@ urlpatterns = [
     path('products/<int:pk>/detail', views.ProductDetailView.as_view(), name='product_detail'),
     path('products/create', views.ProductCreateView.as_view(), name='product_create'),
     path('products/<int:pk>/update', views.ProductUpdateView.as_view(), name='product_update'),
+    path('products/<int:pk>/add_image', views.ProductAddImageView.as_view(), name='product_add_image'),
 
     # Product picture view
     path('picture/<int:pk>', views.stream_file, name='product_picture')

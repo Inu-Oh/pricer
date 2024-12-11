@@ -1,4 +1,4 @@
-from prcr.forms import FeatureCreateForm, PriceCreateForm, ProductCreateForm, SubcategoryCreateForm
+from prcr.forms import FeatureCreateForm, PriceCreateForm, ProductCreateForm, ProductAddImageForm, SubcategoryCreateForm
 from prcr.models import Brand, Category, Feature, Price, Product, SubCategory
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -226,6 +226,30 @@ class ProductUpdateView(LoginRequiredMixin, View):
     def post(self, request, pk=None):
         product = get_object_or_404(Product, id=pk, owner=self.request.user)
         form = ProductCreateForm(request.POST, request.FILES or None, instance=product)
+
+        if not form.is_valid():
+            ctx = {'form': form}
+            return render(request, self.template_name, ctx)
+        
+        product = form.save(commit=False)
+        product.save()
+        success_url = reverse_lazy('prcr:product_detail', kwargs={'pk': product.id})
+
+        return redirect(success_url)
+    
+
+class ProductAddImageView(LoginRequiredMixin, View):
+    template_name = "prcr/product_add_image_form.html"
+
+    def get(self, request, pk=None):
+        product = get_object_or_404(Product, id=pk, owner=self.request.user)
+        form = ProductAddImageForm(instance=product)
+        ctx = {'form': form}
+        return render(request, self.template_name, ctx)
+
+    def post(self, request, pk=None):
+        product = get_object_or_404(Product, id=pk, owner=self.request.user)
+        form = ProductAddImageForm(request.POST, request.FILES or None, instance=product)
 
         if not form.is_valid():
             ctx = {'form': form}
