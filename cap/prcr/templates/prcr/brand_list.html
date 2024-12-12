@@ -9,9 +9,11 @@
         
         <p class="badge text-secondary mt-3 p-2 rounded-3"
             style="background-color: #e3e9fd">
-            {{ brand_count }} brands<br><br><br>
-            {{ product_count }} products</p>
-        
+            {% if brand_count != 1 %} {{ brand_count }} brands<br><br><br>
+            {% else %} {{ brand_count }} brand<br><br><br>{% endif %}
+            {% if product_count != 1 %} {{ product_count }} products</p>
+            {% else %} {{ product_count }} product</p>{% endif %}
+
         <a class="btn btn-md btn-outline-primary" style="float:right"
             href="{% url 'prcr:brand_create' %}">
             Add a brand<br> to pricer &raquo;</a>

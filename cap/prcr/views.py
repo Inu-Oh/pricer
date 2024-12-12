@@ -242,13 +242,13 @@ class ProductAddImageView(LoginRequiredMixin, View):
     template_name = "prcr/product_add_image_form.html"
 
     def get(self, request, pk=None):
-        product = get_object_or_404(Product, id=pk, owner=self.request.user)
+        product = get_object_or_404(Product, id=pk)
         form = ProductAddImageForm(instance=product)
         ctx = {'form': form}
         return render(request, self.template_name, ctx)
 
     def post(self, request, pk=None):
-        product = get_object_or_404(Product, id=pk, owner=self.request.user)
+        product = get_object_or_404(Product, id=pk)
         form = ProductAddImageForm(request.POST, request.FILES or None, instance=product)
 
         if not form.is_valid():

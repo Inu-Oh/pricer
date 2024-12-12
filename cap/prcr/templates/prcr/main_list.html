@@ -8,9 +8,12 @@
 
         <p class="badge text-secondary mt-3 p-2 rounded-3"
             style="background-color: #e3e9fd">
-            {{ category_count }} categories<br><br>
-            {{ subcategory_count }} subcategories<br><br>
-            {{ product_count }} products<br></p>
+            {% if category_count != 1 %} {{ category_count }} categories<br><br>
+            {% else %} {{ category_count }} category<br><br>{% endif %}
+            {% if subcategory_count != 1 %} {{ subcategory_count }} subcategories<br><br>
+            {% else %} {{ subcategory_count }} subcategory<br><br>{% endif %}
+            {% if product_count != 1 %} {{ product_count }} products<br><p>
+            {% else %} {{ product_count }} product<br></p>{% endif %}
         
         <a class="btn btn-md btn-outline-primary" style="float:right"
             href="{% url 'prcr:category_create' %}">
