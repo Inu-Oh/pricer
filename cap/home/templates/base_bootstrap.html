@@ -9,25 +9,31 @@
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/v4-shims.css">
 
         {% block head %}{% endblock head %}
+        
     </head>
 
     <body>
         <div class="container">
+
             {% block navbar %}{% endblock navbar %}
-            {% block page_header %}{% endblock page_header %}
-            {% block welcome %}{% endblock welcome %}
-            {% block messages %}
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-{{message.level_tag}}" role="alert">
-                            {{ message.text }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            {% endblock messages %}
+
+
+            <div class="p-3 m-2 bg-light rounded-3" style="background-color: #e3e2fd !important;">
+                <div class="container-fluid py-1 d-flex justify-content-between align-items-center">
+                    {% block page_header %}{% endblock page_header %}
+                </div>
+            </div>
+
 
             {% block content %}{% endblock content %}
-            {% block footer %}{% endblock footer %}
+
+
+            <div class="p-3 m-2 bg-light rounded-3" style="background-color: #e3e2fd !important;">
+                <div class="container-fluid py-1 d-flex justify-content-between align-items-center">
+                    {% block footer %}{% endblock footer %}
+                </div>
+            </div>
+
         </div>
     </body>
 </html>
