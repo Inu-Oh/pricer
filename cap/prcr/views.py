@@ -10,6 +10,9 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView
 
+import pandas as pd
+from plotly.offline import plot
+import plotly.express as px
 from urllib.parse import urlparse
 
 
@@ -174,18 +177,41 @@ class ProductDetailView(DetailView):
             lowest_price = price_list.earliest('price')
             low_price_dom = urlparse(lowest_price.link).netloc
             lowest_price.domain = '.'.join(low_price_dom.split('.')[-2:])
+            latest_date = price_list.latest('date_observed') # delete or use
+            earliest_date = price_list.earliest('date_observed') # delete or use
         else:
             highest_price = ''
             lowest_price = ''
+            latest_date = ''# delete or use
+            earliest_date = ''# delete or use
         product = Product.objects.get(id=pk)
         product.natural_updated = naturalday(product.updated_at)
 
+        # Set up price chart
+        if highest_price:
+            price_dates = [price.date_observed for price in price_list]
+            prices = [price.price for price in price_list]
+            scale = [int(price.price) for price in price_list]
+            price_data = {
+                'Dates': price_dates,
+                'Prices': prices,
+                'Scale': scale
+            }
+            data_frame = pd.DataFrame(price_data)
+            figure = px.scatter(
+                data_frame, x='Dates', y='Prices', color='Scale', size='Scale'
+            )
+            # Embed the plot in an HTML div tag
+            price_chart: str = plot(figure, output_type='div')
+        else:
+            price_chart: str = 'There are no prices to plot'
         context = {
             'product': product,
             'feature_list': feature_list,
             'price_list': price_list,
             'highest_price': highest_price,
-            'lowest_price': lowest_price
+            'lowest_price': lowest_price,
+            'price_chart': price_chart
         }
         return render(request, self.template_name, context)
         
