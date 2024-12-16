@@ -10,6 +10,7 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView
 
+import locale
 import pandas as pd
 from plotly.offline import plot
 import plotly.express as px
@@ -151,12 +152,13 @@ class ProductListView(ListView):
         subcategory = SubCategory.objects.get(id=pk)
         brands = Brand.objects.all()
         feature_list = Feature.objects.all()
-        # to do: can alter brands to brand_list by filtering for brands related to product_list
+        price_list = Price.objects.all().order_by('price')
         context = {
             'filtered_products': filtered_products,
             'subcategory': subcategory,
             'brands': brands,
             'feature_list': feature_list,
+            'price_list': price_list,
             }
         return render(request, self.template_name, context)
 
@@ -168,39 +170,59 @@ class ProductDetailView(DetailView):
     def get(self, request, pk=None):
         feature_list = Feature.objects.filter(product_id=pk)
         price_list = Price.objects.filter(product_id=pk)
+        price_list = price_list.order_by('-date_observed')
+
         if price_list:
-            for obj in price_list:
-                obj.natural_date_observed = naturalday(obj.date_observed)
+            for price in price_list:
+                price.natural_date_observed = naturalday(price.date_observed)
             highest_price = price_list.latest('price')
             high_price_dom = urlparse(highest_price.link).netloc
             highest_price.domain = '.'.join(high_price_dom.split('.')[-2:])
             lowest_price = price_list.earliest('price')
             low_price_dom = urlparse(lowest_price.link).netloc
             lowest_price.domain = '.'.join(low_price_dom.split('.')[-2:])
-            latest_date = price_list.latest('date_observed') # delete or use
-            earliest_date = price_list.earliest('date_observed') # delete or use
         else:
             highest_price = ''
             lowest_price = ''
-            latest_date = ''# delete or use
-            earliest_date = ''# delete or use
         product = Product.objects.get(id=pk)
         product.natural_updated = naturalday(product.updated_at)
 
-        # Set up price chart
+        # Set up price chart data
         if highest_price:
             price_dates = [price.date_observed for price in price_list]
             prices = [price.price for price in price_list]
-            scale = [int(price.price) for price in price_list]
+            scale = [-int((price.price - lowest_price.price)/(highest_price.price - lowest_price.price) * 10) + 10 for price in price_list]
+            dot_size = [val if val > 3 else 3 for val in scale]
+            hover_texts = []
+            locale.setlocale(locale.LC_ALL, 'C')
+            def format_currency(amount):
+                return '${:,.2f}'.format(amount)
+            for price in price_list:
+                hover_text = "<b>" + format_currency(price.price) + "</b><br>" + price.natural_date_observed + "<br>" 
+                domain = urlparse(price.link).netloc
+                hover_text += '.'.join(domain.split('.')[-2:])
+                hover_texts.append(hover_text)
+                price_domain = urlparse(price.link).netloc
+                price.domain = '.'.join(price_domain.split('.')[-2:])
+
+            # Set up price chart elements
             price_data = {
-                'Dates': price_dates,
-                'Prices': prices,
-                'Scale': scale
+                'Price History': price_dates,
+                'Price': prices,
+                'Price Rating': scale,
+                'Dot size': dot_size,
+                'HoverTexts': hover_texts
             }
             data_frame = pd.DataFrame(price_data)
             figure = px.scatter(
-                data_frame, x='Dates', y='Prices', color='Scale', size='Scale'
-            )
+                data_frame, x='Price History', y='Price', color='Price Rating', size='Dot size',
+                color_continuous_scale='rdylgn')
+            figure['layout']['yaxis']['autorange'] = 'reversed'
+            figure.update_traces(mode='markers', hovertemplate=hover_texts)
+            figure.update_layout(
+                yaxis_tickprefix = '$', yaxis_tickformat = ',',
+                xaxis={'visible': True, 'showticklabels': False})
+
             # Embed the plot in an HTML div tag
             price_chart: str = plot(figure, output_type='div')
         else:

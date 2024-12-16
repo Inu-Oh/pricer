@@ -2,6 +2,7 @@
 
 
 {% block page_header %}
+{% load humanize %}
 <h2 class="display-5 text-muted"> {{ subcategory.subcategory }} </h2>
 <p><a class="btn btn-md btn-outline-primary mt-3" 
     href="{% url 'prcr:product_create' %}">
@@ -13,15 +14,18 @@
 {% for product in filtered_products %}
 <div class="p-2 pt-3 m-3 bg-light rounded-3" style="background-color: #e3f2ed !important;">
     <div class="container-fluid d-flex justify-content-between" style="min-height: 111px;">
-        <div><p class="text-dark">
+        <div><p>
             <a href="{% url 'prcr:product_detail' product.id %}" style="text-decoration: none"> 
                 {{ product.product }}
                 {% for brand in brands %}{% if brand.id == product.brand_id %}
-                <span class="small text-muted">({{ brand.brand }})</span></a></p>
+                <span class="small text-muted">({{ brand.brand }})
                 {% endif %}{% endfor %}
+                {% if price_list %}&#9679; {% for price in price_list %}{% if price.product_id == product.id %}
+                ${{ price.price|intcomma }},
+                {% endif %}{% endfor %}{% endif %}</span></a></p>
             <p class="small text-dark">
             {% if feature_list %}{% for feature in feature_list %}{% if feature.product_id == product.id %}
-            {{ feature }} &raquo; {% endif %}{% endfor %}{% endif %}
+            {{ feature }} &raquo; {% endif %}{% endfor %}{% endif %}</p>
             {% if product.owner_id == user.id %}
             <p><a class="btn btn-sm btn-outline-secondary mt-1 text-muted" 
                 href="{% url 'prcr:product_update' product.id %}">
