@@ -27,20 +27,37 @@
                 class="btn btn-sm btn-outline-secondary">
                 Add {{ brand.brand }} products &raquo;</a>
         </h4>
+    </div>
+    <div class="container">
         {% if product_list %}
-        <ul>
-            {% for product in product_list %}
-                {% if product.brand.id == brand.id %}
-                <li style="list-style-type: none; width: 90%;">
-                    <a href="{% url 'prcr:product_detail' product.id %}"
-                    style="width: 100%; text-align: left;"
-                    class="btn btn-sm btn-outline-dark mb-1">
-                    {{ product.product }}
-                    </a>
-                </li>
-                {% endif %}
-            {% endfor %}
-        </ul>
+        <div class="row mb-2">
+            <div class="col-md-6">
+                <div class="card p-3 row g-0 border rounded overflow-hidden mb-4 shadow-sm h-md-250 position-relative">
+                    {% for product in product_list %}
+                    {% if product.brand.id == brand.id %}
+                    <div class="row g-0 card-header flex-md-row">
+                        <a href="{% url 'prcr:product_detail' product.id %}"
+                        class="pt-2 col-6 d-flex justify">
+                        {{ product.product }}</a>
+                    </div>
+                    <div class="mb-1 card-body">
+                        <div class="mb-1 card-body">
+                            <p class="card-text mb-auto text-muted">{% if feature_list %} &#9679;
+                            {% for feature in feature_list %}
+                            {% if feature.product.id == product.id %}
+                                {{ feature }} &raquo;
+                            {% endif %}{% endfor %}{% endif %}</p>
+                        </div>
+                        {% if product.content_type %}
+                        <img src="{% url 'prcr:product_picture' product.id %}"
+                        class="rounded-3" style="height: 66px; float: right;">
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
         {% endif %}
     </div>
 </div>

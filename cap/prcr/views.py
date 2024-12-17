@@ -25,13 +25,15 @@ class CategoryListView(ListView):
         category_count = category_list.count()
         subcategory_list = SubCategory.objects.all().order_by('subcategory')
         subcategory_count = subcategory_list.count()
-        product_count = Product.objects.count()
+        product_list = Product.objects.all().order_by('-created_at')
+        product_count = product_list.count()
         context = {
+            'category_count': category_count,
             'category_list': category_list,
+            'subcategory_count': subcategory_count,
             'subcategory_list': subcategory_list,
             'product_count': product_count,
-            'category_count': category_count,
-            'subcategory_count': subcategory_count
+            'product_list': product_list,
             }
         return render(request, self.template_name, context)
 
@@ -77,11 +79,13 @@ class BrandListView(ListView):
         brand_count = brand_list.count()
         product_list = Product.objects.all().order_by('product')
         product_count = product_list.count()
+        feature_list = Feature.objects.all()
         context = {
             'brand_list': brand_list,
             'product_list': product_list,
             'brand_count': brand_count,
-            'product_count': product_count
+            'product_count': product_count,
+            'feature_list': feature_list,
             }
         return render(request, self.template_name, context)
 
@@ -184,6 +188,7 @@ class ProductDetailView(DetailView):
         else:
             highest_price = ''
             lowest_price = ''
+
         product = Product.objects.get(id=pk)
         product.natural_updated = naturalday(product.updated_at)
 
@@ -191,7 +196,10 @@ class ProductDetailView(DetailView):
         if highest_price:
             price_dates = [price.date_observed for price in price_list]
             prices = [price.price for price in price_list]
-            scale = [-int((price.price - lowest_price.price)/(highest_price.price - lowest_price.price) * 10) + 10 for price in price_list]
+            if highest_price.price != lowest_price.price:
+                scale = [-int((price.price - lowest_price.price)/(highest_price.price - lowest_price.price) * 10) + 10 for price in price_list]
+            else:
+                scale = [5]
             dot_size = [val if val > 3 else 3 for val in scale]
             hover_texts = []
             locale.setlocale(locale.LC_ALL, 'C')
@@ -223,10 +231,11 @@ class ProductDetailView(DetailView):
                 yaxis_tickprefix = '$', yaxis_tickformat = ',',
                 xaxis={'visible': True, 'showticklabels': False})
 
-            # Embed the plot in an HTML div tag
+            # Embed the chart plot in an HTML div tag
             price_chart: str = plot(figure, output_type='div')
         else:
             price_chart: str = 'There are no prices to plot'
+
         context = {
             'product': product,
             'feature_list': feature_list,
