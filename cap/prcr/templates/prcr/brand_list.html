@@ -18,9 +18,9 @@
 {% block content %}
 {% if brand_list %}
 {% for brand in brand_list %}
-<div class="p-1 m-3 bg-light rounded-3" style="background-color: #e3f2ed !important;">
-    <div class="container-fluid">
-        <h4 class="p-3 m-2 bg-light rounded-3 text-muted d-flex justify-content-between align-items-center" 
+{% comment %} <div class="p-1 m-3 bg-light rounded-3" style="background-color: #e3f2ed !important;"> {% endcomment %}
+    <div class="container-fluid mb-3">
+        <h4 class="p-3 m-2 bg-light rounded-3 shadow-sm text-dark d-flex justify-content-between align-items-center" 
             style="background-color: #e3e2fd !important;">
             {{ brand }}
             <a href="{% url 'prcr:product_create' %}"
@@ -30,37 +30,40 @@
     </div>
     <div class="container">
         {% if product_list %}
-        <div class="row mb-2">
-            <div class="col-md-6">
-                <div class="card p-3 row g-0 border rounded overflow-hidden mb-4 shadow-sm h-md-250 position-relative">
-                    {% for product in product_list %}
-                    {% if product.brand.id == brand.id %}
+        <div class="row m-0">
+            {% for product in product_list %}
+            {% if product.brand.id == brand.id %}
+            <a href="{% url 'prcr:product_detail' product.id %}" class="col-md-6"
+                style="text-decoration: none;">
+                <div class="card p-3 row g-0 border rounded-3 overflow-hidden mb-4 shadow-sm h-md-250 position-relative"
+                style="background-color: #e3f2e9 !important;">
                     <div class="row g-0 card-header flex-md-row">
-                        <a href="{% url 'prcr:product_detail' product.id %}"
-                        class="pt-2 col-6 d-flex justify">
-                        {{ product.product }}</a>
-                    </div>
-                    <div class="mb-1 card-body">
-                        <div class="mb-1 card-body">
-                            <p class="card-text mb-auto text-muted">{% if feature_list %} &#9679;
+                        <h5 class="pt-2 text-dark">
+                        {{ product.product }}</h5>
+                        </div>
+                    {% comment %} <div class="mb-1 card-body"> {% endcomment %}
+                    <div class=" card-body d-flex justify-content-between align-items-center">
+                        <p class="card-text mb-auto text-dark text-small">
+                            {% if feature_list %} <span class="text-muted">&#9679;</span>
                             {% for feature in feature_list %}
                             {% if feature.product.id == product.id %}
-                                {{ feature }} &raquo;
-                            {% endif %}{% endfor %}{% endif %}</p>
-                        </div>
+                            {{ feature }} &raquo;
+                            {% endif %}{% endfor %}{% endif %}
+                        </p>
                         {% if product.content_type %}
                         <img src="{% url 'prcr:product_picture' product.id %}"
-                        class="rounded-3" style="height: 66px; float: right;">
+                        class="rounded-3 ms-3" style="height: 99px; float: right;">
                         {% endif %}
-                    </div>
-                    {% endif %}
-                    {% endfor %}
+                        </div>
+                    {% comment %} </div> {% endcomment %}
                 </div>
-            </div>
+            </a>
+            {% endif %}
+            {% endfor %}
         </div>
         {% endif %}
     </div>
-</div>
+{% comment %} </div> {% endcomment %}
 {% endfor %}
 {% else %}
 <div class="p-1 m-3 bg-light rounded-3" style="background-color: #e3f2ed !important;">

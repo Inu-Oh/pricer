@@ -23,7 +23,7 @@
 {% for category in category_list %}
 <div class="p-1 m-3 bg-light rounded-3" style="background-color: #e3f2ed !important;">
     <div class="container-fluid">
-        <h4 class="p-3 m-2 bg-light rounded-3 text-muted d-flex justify-content-between align-items-center" 
+        <h4 class="p-3 m-2 bg-light rounded-3 text-dark d-flex justify-content-between align-items-center" 
         style="background-color: #e3e2fd !important;">
         {{ category.category }}
         <a href="{% url 'prcr:subcategory_create' category.id %}"
