@@ -2,9 +2,9 @@
 
 
 {% block page_header %}
-<h2 class="display-5 text-secondary">
+<h2 class="display-5 text-dark">
     Browse<br>categories</h2>
-<p class="badge text-secondary mt-3 p-2 rounded-3"
+<p class="badge text-dark mt-3 p-2 rounded-3"
     style="background-color: #e3e9fd">
     {% if category_count != 1 %} {{ category_count }} categories<br><br>
     {% else %} {{ category_count }} category<br><br>{% endif %}
@@ -21,9 +21,9 @@
 {% block content %}
 {% if category_list %}
 {% for category in category_list %}
-<div class="p-1 m-3 bg-light rounded-3" style="background-color: #e3f2ed !important;">
+<div class="p-1 m-3 bg-light rounded-3" style="background-color: #f7f6fd !important;">
     <div class="container-fluid">
-        <h4 class="p-3 m-2 bg-light rounded-3 text-dark d-flex justify-content-between align-items-center" 
+        <h4 class="p-3 mb-3 bg-light rounded-3 shadow-sm text-dark d-flex justify-content-between align-items-center" 
         style="background-color: #e3e2fd !important;">
         {{ category.category }}
         <a href="{% url 'prcr:subcategory_create' category.id %}"
@@ -34,9 +34,13 @@
             {% for subcategory in subcategory_list %}
             {% if subcategory.category.id == category.id %}
             <li style="list-style-type: none; width: 90%;">
+
                 <a href="{% url 'prcr:product_list' subcategory.id %}"
-                    style="width: 100%; text-align: left;"
-                    class="btn btn-sm btn-outline-dark mb-1">
+                    style="text-decoration: none;">
+                    <div class="list_item p-2 mb-3 rounded 3 shadow-sm text-dark text-small"
+                    style="background-color: #e3f2ed !important;"
+                    onmouseover="document.getElementsByClassName('list_item').style.backgroundColor = '#797979';"
+                    onmouseout="document.getElementsByClassName('list_item').style.backgroundColor = '#e3f2ed';">
                     <strong>{{ subcategory.subcategory }}</strong>
                     {% if product_list %}<span class="text-muted">
                         {% for product in product_list %}
@@ -47,6 +51,7 @@
                         {% endif %}
                         {% endfor %}</span>
                     {% endif %}
+                    </div>
                 </a>
             </li>
             {% endif %}
@@ -72,4 +77,7 @@
 {% block footer %}
 {% comment %} Thinking of something better to put here. {% endcomment %}
     <p>Copyright or something</p>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
 {% endblock footer %}

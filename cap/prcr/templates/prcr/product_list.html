@@ -3,7 +3,7 @@
 
 {% block page_header %}
 {% load humanize %}
-<h2 class="display-5 text-muted"> {{ subcategory.subcategory }} </h2>
+<h2 class="display-5 text-dark"> {{ subcategory.subcategory }} </h2>
 <p><a class="btn btn-md btn-outline-primary mt-3" 
     href="{% url 'prcr:product_create' %}">
     Add a new product &raquo;</a></p>
@@ -12,7 +12,7 @@
 
 {% block content %}
 {% for product in filtered_products %}
-<div class="p-2 pt-3 m-3 bg-light rounded-3" style="background-color: #e3f2ed !important;">
+<div class="p-2 pt-3 m-3 bg-light rounded-3 shadow-sm" style="background-color: #e3f2ed !important;">
     <div class="container-fluid d-flex justify-content-between" style="min-height: 111px;">
         <div><p>
             <a href="{% url 'prcr:product_detail' product.id %}" style="text-decoration: none"> 
