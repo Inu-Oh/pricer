@@ -1,4 +1,4 @@
-from prcr.forms import FeatureCreateForm, PriceCreateForm, ProductCreateForm, ProductAddImageForm, SubcategoryCreateForm
+from prcr.forms import FeatureCreateForm, PriceCreateForm, ProductBrandCreateForm, ProductAddImageForm, ProductSubcategoryCreateForm, ProductUpdateForm, SubcategoryCreateForm
 from prcr.models import Brand, Category, Feature, Price, Product, SubCategory
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -247,24 +247,54 @@ class ProductDetailView(DetailView):
         return render(request, self.template_name, context)
         
 
-class ProductCreateView(LoginRequiredMixin, View):
-    template_name = "prcr/product_form.html"
+class ProductBrandCreateView(LoginRequiredMixin, View):
+    template_name = "prcr/product_brand_form.html"
 
-    def get(self, request, pk=None):
-        form = ProductCreateForm()
-        ctx = {'form': form}
+    def get(self, request, pk):
+        brand = get_object_or_404(Brand, id=pk)
+        form = ProductBrandCreateForm()
+        ctx = {'form': form, 'brand': brand}
         return render(request, self.template_name, ctx)
 
-    def post(self, request, pk=None):
-        form = ProductCreateForm(request.POST, request.FILES or None)
+    def post(self, request, pk):
+        brand = get_object_or_404(Brand, id=pk)
+        form = ProductBrandCreateForm(request.POST, request.FILES or None)
 
         if not form.is_valid():
-            ctx = {'form': form}
+            ctx = {'form': form, 'brand': brand}
             return render(request, self.template_name, ctx)
         
         # Add owner to the model before saving
         product = form.save(commit=False)
         product.owner = self.request.user
+        product.brand = brand
+        product.save()
+        success_url = reverse_lazy('prcr:product_detail', kwargs={'pk': product.id})
+        
+        return redirect(success_url)
+
+
+class ProductSubcategoryCreateView(LoginRequiredMixin, View):
+    template_name = "prcr/product_subcategory_form.html"
+
+    def get(self, request, pk):
+        subcategory = get_object_or_404(SubCategory, id=pk)
+        form = ProductSubcategoryCreateForm()
+        ctx = {'form': form, 'subcategory': subcategory}
+        return render(request, self.template_name, ctx)
+
+    def post(self, request, pk):
+        subcategory = get_object_or_404(SubCategory, id=pk)
+        form = ProductSubcategoryCreateForm(request.POST, request.FILES or None)
+
+        if not form.is_valid():
+            ctx = {'form': form, 'subcategory': subcategory}
+            return render(request, self.template_name, ctx)
+        
+        # Add owner to the model before saving
+        product = form.save(commit=False)
+        product.owner = self.request.user
+        product.subcategory = subcategory
         product.save()
         success_url = reverse_lazy('prcr:product_detail', kwargs={'pk': product.id})
         
@@ -274,18 +304,18 @@ class ProductCreateView(LoginRequiredMixin, View):
 class ProductUpdateView(LoginRequiredMixin, View):
     template_name = "prcr/product_form.html"
 
-    def get(self, request, pk=None):
+    def get(self, request, pk):
         product = get_object_or_404(Product, id=pk, owner=self.request.user)
-        form = ProductCreateForm(instance=product)
-        ctx = {'form': form}
+        form = ProductUpdateForm(instance=product)
+        ctx = {'form': form, 'product': product}
         return render(request, self.template_name, ctx)
 
-    def post(self, request, pk=None):
+    def post(self, request, pk):
         product = get_object_or_404(Product, id=pk, owner=self.request.user)
-        form = ProductCreateForm(request.POST, request.FILES or None, instance=product)
+        form = ProductUpdateForm(request.POST, request.FILES or None, instance=product)
 
         if not form.is_valid():
-            ctx = {'form': form}
+            ctx = {'form': form, 'product': product}
             return render(request, self.template_name, ctx)
         
         product = form.save(commit=False)
@@ -293,23 +323,23 @@ class ProductUpdateView(LoginRequiredMixin, View):
         success_url = reverse_lazy('prcr:product_detail', kwargs={'pk': product.id})
 
         return redirect(success_url)
-    
+
 
 class ProductAddImageView(LoginRequiredMixin, View):
     template_name = "prcr/product_add_image_form.html"
 
-    def get(self, request, pk=None):
+    def get(self, request, pk):
         product = get_object_or_404(Product, id=pk)
         form = ProductAddImageForm(instance=product)
-        ctx = {'form': form}
+        ctx = {'form': form, 'product': product}
         return render(request, self.template_name, ctx)
 
-    def post(self, request, pk=None):
+    def post(self, request, pk):
         product = get_object_or_404(Product, id=pk)
         form = ProductAddImageForm(request.POST, request.FILES or None, instance=product)
 
         if not form.is_valid():
-            ctx = {'form': form}
+            ctx = {'form': form, 'product': product}
             return render(request, self.template_name, ctx)
         
         product = form.save(commit=False)

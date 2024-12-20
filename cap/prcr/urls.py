@@ -15,6 +15,8 @@ urlpatterns = [
 
     # Brand list view
     path('brands', views.BrandListView.as_view(), name='brand_list'),
+    # Create product from brand list view
+    path('brands/<int:pk>/create_product', views.ProductBrandCreateView.as_view(), name='product_brand_create'),
 
     # Feature create view
     path('product/<int:pk>/new_feature', views.FeatureCreateView.as_view(), name='feature_create'),
@@ -24,10 +26,11 @@ urlpatterns = [
 
     # Product list view
     path('subcategory/<int:pk>/products', views.ProductListView.as_view(), name='product_list'),
+    # Create product from subcategory list view
+    path('subcategory/<int:pk>/create_product', views.ProductSubcategoryCreateView.as_view(), name='product_subcategory_create'),
 
-    # Product detail, create and update views
+    # Product detail, update and add image views
     path('products/<int:pk>/detail', views.ProductDetailView.as_view(), name='product_detail'),
-    path('products/create', views.ProductCreateView.as_view(), name='product_create'),
     path('products/<int:pk>/update', views.ProductUpdateView.as_view(), name='product_update'),
     path('products/<int:pk>/add_image', views.ProductAddImageView.as_view(), name='product_add_image'),
 

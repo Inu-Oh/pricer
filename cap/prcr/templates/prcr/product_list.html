@@ -5,8 +5,8 @@
 {% load humanize %}
 <h2 class="display-5 text-dark"> {{ subcategory.subcategory }} </h2>
 <p><a class="btn btn-md btn-outline-primary mt-3" 
-    href="{% url 'prcr:product_create' %}">
-    Add a new product &raquo;</a></p>
+    href="{% url 'prcr:product_subcategory_create' subcategory.id %}">
+    Add a new product to {{ subcategory|lower }} &raquo;</a></p>
 {% endblock page_header %}
 
 

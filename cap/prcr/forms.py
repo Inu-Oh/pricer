@@ -22,7 +22,7 @@ class SubcategoryCreateForm(forms.ModelForm):
         fields = ['subcategory']
 
 
-class ProductCreateForm(forms.ModelForm):
+class ProductBrandCreateForm(forms.ModelForm):
     max_upload_limit = 2 * 1024 * 1024
     max_upload_limit_text = naturalsize(max_upload_limit)
 
@@ -34,7 +34,7 @@ class ProductCreateForm(forms.ModelForm):
 
     class Meta:
         model = Product
-        fields = ['product', 'brand', 'subcategory', 'picture']  # Picture is manual
+        fields = ['product', 'subcategory', 'picture']  # Picture is manual
 
     # Validate the size of the picture
     def clean(self):
@@ -47,7 +47,7 @@ class ProductCreateForm(forms.ModelForm):
             
     # Convert uploaded File object to a picture
     def save(self, commit=True):
-        instance = super(ProductCreateForm, self).save(commit=False)
+        instance = super(ProductBrandCreateForm, self).save(commit=False)
 
         # We only need to adjust picture if it is a freshly uploaded file
         f = instance.picture   # Make a copy
@@ -62,7 +62,19 @@ class ProductCreateForm(forms.ModelForm):
         return instance
 
 
-class ProductAddImageForm(ProductCreateForm):
+class ProductSubcategoryCreateForm(ProductBrandCreateForm):
+    class Meta:
+        model = Product
+        fields = ['product', 'brand', 'picture']
+
+
+class ProductUpdateForm(ProductBrandCreateForm):
+    class Meta:
+        model = Product
+        fields = ['product', 'brand', 'subcategory', 'picture']
+
+
+class ProductAddImageForm(ProductBrandCreateForm):
     class Meta:
         model = Product
         fields = ['picture']

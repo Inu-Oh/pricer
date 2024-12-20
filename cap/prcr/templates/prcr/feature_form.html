@@ -1,24 +1,14 @@
-{% extends "base_menu.html" %}
+{% extends "base_form.html" %}
 
 
 {% block page_header %}
-<h2 class="display-6 text-secondary">Add new featurey to</h2>
-<h5 class="text-primary">{{ product.product }} by {{ product.brand }} <h5>
+<h3 class="display-6 text-dark">Add a new feature to<br>
+    <span class="text-primary display-3"> {{ product.product }} </span>
+    <span class="text-small"> ({{ product.brand.brand }}) </span></h3>
 {% endblock page_header %}
 
 
-{% block content %}
-<div class="p-1 m-3 bg-light rounded-3 shadow-sm"
-    style="background-color: #e3f2ed !important;">
-    <div class="container-fluid p-3">
-        {% load crispy_forms_tags %}
-        <form action="" method="post" id="upload_form" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form|crispy }}
-            <input type="submit" value="Submit" class="btn btn-lg btn-outline-success me-3">
-            <input type="submit" value="Cancel" class="btn btn-lg btn-outline-danger"
-                onclick="window.location.href='{% url 'prcr:product_detail' product.id %}';return false;">
-        </form>
-    </div>
-</div>
-{% endblock content %}
+{% block inner_content %}
+<input type="submit" value="Cancel" class="btn btn-lg btn-outline-danger"
+    onclick="window.location.href='{% url 'prcr:product_detail' product.id %}';return false;">
+{% endblock inner_content %}
