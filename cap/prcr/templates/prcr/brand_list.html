@@ -1,9 +1,10 @@
 {% extends "base_menu.html" %}
 
+
 {% block page_header %}
 <h2 class="display-5 text-dark">
     Browse brands</h2>
-<p class="badge text-secondary mt-3 p-2 rounded-3"
+<p class="badge text-secondary mt-3 p-2 rounded-3 shadow-sm"
     style="background-color: #e3e9fd">
     {% if brand_count != 1 %} {{ brand_count }} brands<br><br><br>
     {% else %} {{ brand_count }} brand<br><br><br>{% endif %}
@@ -19,7 +20,7 @@
 {% if brand_list %}
 {% for brand in brand_list %}
 {% comment %} <div class="p-1 m-3 bg-light rounded-3" style="background-color: #e3f2ed !important;"> {% endcomment %}
-    <div class="container-fluid mb-3">
+    <section class="container-fluid mb-3">
         <h4 class="p-3 m-2 bg-light rounded-3 shadow-sm text-dark d-flex justify-content-between align-items-center" 
             style="background-color: #e3e2fd !important;">
             {{ brand }}
@@ -27,8 +28,8 @@
                 class="btn btn-sm btn-outline-secondary">
                 Add {{ brand.brand }} products &raquo;</a>
         </h4>
-    </div>
-    <div class="container">
+    </section>
+    <section class="container">
         {% if product_list %}
         <div class="row m-0">
             {% for product in product_list %}
@@ -60,7 +61,7 @@
             {% endfor %}
         </div>
         {% endif %}
-    </div>
+    </section>
 {% endfor %}
 {% else %}
 <div class="p-1 m-3 bg-light rounded-3" style="background-color: #e3f2ed !important;">

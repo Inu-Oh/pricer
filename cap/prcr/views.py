@@ -156,13 +156,27 @@ class ProductListView(ListView):
         subcategory = SubCategory.objects.get(id=pk)
         brands = Brand.objects.all()
         feature_list = Feature.objects.all()
-        price_list = Price.objects.all().order_by('price')
+        price_list = Price.objects.all().order_by('-price') # order for lowest price last
+
+        # Get the lowest price for each product into a dictionary
+        pruduct_lowest_price_dict = {}
+        for product in filtered_products:
+            product_id = str(product['id'])
+            for price in price_list:
+                price_product_id = str(price.product.id)
+                if price_product_id == product_id: # last price saved is lowest
+                    pruduct_lowest_price_dict[product_id] = price.price
+        product_lowest_price_list = []
+        # Transform it into an accessible list of lowest price tuples
+        for product_id, price in pruduct_lowest_price_dict.items():
+            product_lowest_price_list.append((int(product_id), price))
+
         context = {
             'filtered_products': filtered_products,
             'subcategory': subcategory,
             'brands': brands,
             'feature_list': feature_list,
-            'price_list': price_list,
+            'product_lowest_price_list': product_lowest_price_list
             }
         return render(request, self.template_name, context)
 

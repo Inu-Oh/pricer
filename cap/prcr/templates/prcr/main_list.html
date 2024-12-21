@@ -4,7 +4,7 @@
 {% block page_header %}
 <h2 class="display-5 text-dark">
     Browse<br>categories</h2>
-<p class="badge text-dark mt-3 p-2 rounded-3"
+<p class="badge text-dark mt-3 p-2 rounded-3 shadow-sm"
     style="background-color: #e3e9fd">
     {% if category_count != 1 %} {{ category_count }} categories<br><br>
     {% else %} {{ category_count }} category<br><br>{% endif %}
@@ -21,7 +21,7 @@
 {% block content %}
 {% if category_list %}
 {% for category in category_list %}
-<div class="p-1 m-3 bg-light rounded-3" style="background-color: #f7f6fd !important;">
+<section class="p-1 m-3 bg-light rounded-3" style="background-color: #f7f6fd !important;">
     <div class="container-fluid">
         <h4 class="p-3 mb-3 bg-light rounded-3 shadow-sm text-dark d-flex justify-content-between align-items-center" 
         style="background-color: #e3e2fd !important;">
@@ -61,15 +61,15 @@
         </ul>
         {% endif %}            
     </div>
-</div>
+</section>
 {% endfor %}
 {% else %}
-<div class="p-1 m-3 bg-light rounded-3" style="background-color: #e3f2ed !important;">
+<section class="p-1 m-3 bg-light rounded-3" style="background-color: #e3f2ed !important;">
     <div class="container-fluid">
         <p class="p-3 m-2 text-danger">There are no categories yet in Pricer.<br>
             Add categories, subcategories and brands before creating a product.</p>
     </div>
-</div>
+</section>
 {% endif %}
 {% endblock content %}
 
