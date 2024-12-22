@@ -20,8 +20,7 @@
 <h2 class="display-6 text-primary"> {{ product.product }} <br>
     <span class="fs-5 text-muted"> {{ product.brand }} </span>
 </h2>
-<p class="badge text-secondary mt-3 p-2 rounded-3 shadow-sm"
-    style="background-color: #e3e9fd">
+<p class="header-stat badge text-secondary mt-3 p-2 rounded-3 shadow-sm">
     updated<br><br>{{ product.natural_updated }}</p>
 <p>{% if product.owner == user %}
     <a href="{% url 'prcr:product_update' product.id %}"
@@ -32,14 +31,11 @@
 
 {% block content %}
 {% if product.content_type %}
-<div id="overlay" class="overlay" style="text-align: center;"
-    onclick="document.getElementById('overlay').style.display = 'none';" >
-    <img style="width:90%; margin-top: 50px; border: 3px solid black;" 
-        src="{% url 'prcr:product_picture' product.id %}">
+<div id="overlay" class="overlay" onclick="document.getElementById('overlay').style.display = 'none';">
+    <img id="overlay-image" src="{% url 'prcr:product_picture' product.id %}">
 </div>
 {% endif %}
-<div class="p-1 m-3 bg-light rounded-3 shadow-sm"
-    style="background-color: #e3f2ed !important;">
+<div class="main p-1 m-3 bg-light rounded-3 shadow-sm">
     <div class="container">
         <section class="row">
             <div class="col-7 mt-3">
@@ -68,28 +64,24 @@
             <div class="col-5">
                 {% if product.content_type %}
                 <img src="{% url 'prcr:product_picture' product.id %}"
-                    class="rounded-3 mt-3" style="width: 100%"
+                    id="product-profile-pic" class="rounded-3 mt-3"
                     onclick="document.getElementById('overlay').style.display = 'block';">
                 {% else %}
-                <div class="container-fluid rounded-3 mt-3" 
-                    style="width: 100%; height: 86%;">
+                <div id="product-profile-no-pic-div" class="container-fluid rounded-3 mt-3">
                     <a href="{% url 'prcr:product_add_image' product.id %}"
-                        class="btn btn-lg btn-outline-dark" id="noPic"
-                        style="width: 100%; height: 100%; background-color: #dedede;"
-                        onmouseover="document.getElementById('noPic').style.backgroundColor = '#797979';"
-                        onmouseout="document.getElementById('noPic').style.backgroundColor = '#dedede';">
+                        id="product-profile-no-pic" class="btn btn-lg btn-outline-dark">
                         <br>Add an image</a> 
                 </div>
                 {% endif %}
             </div>
         </section>
         <section class="row">
-            <div class="col-11 m-3" style="width: 96%" >
+            <div class="product-profile col-11 m-3">
                 {{ price_chart|safe }}
             </div>
         </section>
         <section class="row">
-            <div class="col-11 ms-5 mt-2" style="width: 96%" >
+            <div class="product-profile col-11 ms-5 mt-2">
                 <h5>Price history</h5>
                 <a href="{% url 'prcr:price_create' product.id %}"
                     class="btn btn-sm btn-outline-secondary text-start mb-3">
@@ -120,6 +112,6 @@
     class="btn btn-sm btn-outline-secondary m-2">
     Back to browsing {{ product.subcategory }} &raquo;</a></p>
 
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
 {% endblock footer %}
