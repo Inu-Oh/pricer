@@ -81,7 +81,7 @@
             </div>
         </section>
         <section class="row">
-            <div class="product-profile col-11 ms-5 mt-2">
+            <div class="col-5 mt-2">
                 <h5>Price history</h5>
                 <a href="{% url 'prcr:price_create' product.id %}"
                     class="btn btn-sm btn-outline-secondary text-start mb-3">
@@ -100,6 +100,26 @@
                     &#9679; {{ price.domain }}
                     &#9679; {{ price.natural_date_observed }} </a></p>
                 {% endif %}{% endfor %}{% endif %}
+            </div>
+            <div class="comments col-5 mt-2">
+                <h5>Comments</h5>
+                {% if user.is_authenticated %}
+                <p>
+                {% load crispy_forms_tags %}
+                <form method="post" action="{% url 'prcr:post_comment' product.id %}">
+                    {% csrf_token %}
+                    {{ comment_form|crispy }}
+                    <input type="submit" value="Submit">
+                </form>
+                </p>
+                {% endif %}
+                {% if comments %}{% for comment in comments %}
+                <p> {{ comment.text }} ({{ comment.updated_at|naturaltime }})
+                    {% if user == comment.owner %}
+                    <a href="{% url 'prcr:detele_comment' comment.id %}"><i class="fa fa-trash"></i></a>
+                    {% endif %}
+                </p>
+                {% endfor %}{% endif %}
             </div>
         </section>
     </div>

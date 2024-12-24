@@ -76,8 +76,8 @@ class Product(models.Model):
         related_name="product_subcategory")
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL,
         related_name="product_owner")
-    # colors = array for colors or selection
-    # features = description or array
+    comments = models.ManyToManyField(settings.AUTH_USER_MODEL,
+        through='Comment', related_name='product_comments')
 
     # Picture upload
     picture = models.BinaryField(null=True, blank=True, editable=True)
@@ -97,6 +97,24 @@ class Product(models.Model):
         elif self.subcategory:
             product_str = product_str + " (" + self.subcategory.subcategory + ", " + self.subcategory.category.category + ")"
         return product_str
+
+
+class Comment(models.Model):
+    text = models.TextField(
+        validators=[MinLengthValidator(3, "Comment must be longer than three characters")]
+    )
+
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    # Snippet
+    def __str__(self):
+        if len(self.text) < 17:
+            return self.text
+        return self.text[:13] + '...'
 
 
 class Price(models.Model):

@@ -4,6 +4,10 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from prcr.humanize import naturalsize
 
 
+class CommentForm(forms.Form):
+    comment = forms.CharField(required=True, max_length=250, min_length=3, strip=True)
+
+
 class FeatureCreateForm(forms.ModelForm):
     class Meta:
         model = Feature

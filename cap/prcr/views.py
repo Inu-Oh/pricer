@@ -1,12 +1,13 @@
-from prcr.forms import FeatureCreateForm, PriceCreateForm, ProductBrandCreateForm, ProductAddImageForm, ProductSubcategoryCreateForm, ProductUpdateForm, SubcategoryCreateForm
-from prcr.models import Brand, Category, Feature, Price, Product, SubCategory
+from prcr.forms import CommentForm, FeatureCreateForm, PriceCreateForm, ProductBrandCreateForm, ProductAddImageForm, ProductSubcategoryCreateForm, ProductUpdateForm, SubcategoryCreateForm
+from prcr.models import Brand, Category, Comment, Feature, Price, Product, SubCategory
+from prcr.owner import OwnerDeleteView
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.humanize.templatetags.humanize import naturalday #, naturaltime
 from django.db.models.functions import Lower
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView
 
@@ -42,6 +43,23 @@ class CategoryCreateView(LoginRequiredMixin, CreateView):
     model = Category
     fields = '__all__'
     success_url = reverse_lazy('prcr:main_list')
+
+
+class CommentCreateView(LoginRequiredMixin, View):
+    def post(self, request, pk) :
+        product = get_object_or_404(Product, id=pk)
+        comment = Comment(text=request.POST['comment'], owner=request.user, product=product)
+        comment.save()
+        return redirect(reverse('prcr:product_detail', args=[pk]))
+
+class CommentDeleteView(OwnerDeleteView):
+    model = Comment
+    template_name = "prcr/comment_delete_form.html"
+
+    # https://stackoverflow.com/questions/26290415/deleteview-with-a-dynamic-success-url-dependent-on-id
+    def get_success_url(self):
+        product = self.object.product
+        return reverse('prcr:product_detail', args=[product.id])
 
 
 class SubcategoryCreateView(LoginRequiredMixin, CreateView):
@@ -186,10 +204,15 @@ class ProductDetailView(DetailView):
     template_name = "prcr/product_detail.html"
 
     def get(self, request, pk=None):
+        product = get_object_or_404(Product, id=pk)
+        product.natural_updated = naturalday(product.updated_at)
+        comments = Comment.objects.filter(product=product).order_by('-updated_at')
+        comment_form = CommentForm()
         feature_list = Feature.objects.filter(product_id=pk)
         price_list = Price.objects.filter(product_id=pk)
         price_list = price_list.order_by('-date_observed')
 
+        # Set up all price data
         if price_list:
             for price in price_list:
                 price.natural_date_observed = naturalday(price.date_observed)
@@ -202,9 +225,6 @@ class ProductDetailView(DetailView):
         else:
             highest_price = ''
             lowest_price = ''
-
-        product = Product.objects.get(id=pk)
-        product.natural_updated = naturalday(product.updated_at)
 
         # Set up price chart data
         if highest_price:
@@ -252,6 +272,8 @@ class ProductDetailView(DetailView):
 
         context = {
             'product': product,
+            'comments': comments,
+            'comment_form': comment_form,
             'feature_list': feature_list,
             'price_list': price_list,
             'highest_price': highest_price,
